@@ -56,9 +56,9 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 |`!calc`|Multi-operation calculator|
 |`!passgen`|Generate a cryptographically secure password|
 |`!encrypt <message>`|Encrypt a message using Fernet symmetric encryption|
-|`!decrypt <token>`|Decrypt a previously encrypted message|
+|`!decrypt`|Decrypt a previously encrypted message|
 |`!quote`|Fetch a random inspirational quote from an API|
-|`!picker <items>`|Pick a random item from a custom list|
+|`!picker`|Pick a random item from a custom list|
 
 ### 🍽️ Other
 
@@ -84,8 +84,8 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 ### 1\. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo/Main
+git clone https://github.com/idk123-bot/Main.git
+cd Main
 ```
 
 ### 2\. Install Dependencies

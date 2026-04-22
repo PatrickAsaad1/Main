@@ -2,7 +2,7 @@
 
 A feature-rich Discord bot built with Python and discord.py, featuring 16 commands across utilities, games, encryption, and more. Includes CLI versions of all games and a full project portfolio.
 
-\---
+\
 
 ## 📋 Table of Contents
 
@@ -17,7 +17,7 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 * [Hardware Projects](#-hardware-projects)
 * [Certifications](#-certifications)
 
-\---
+\
 
 ## ✨ Features
 
@@ -30,7 +30,7 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 * External API integration for random quotes
 * Secure password generation
 
-\---
+\
 
 ## 💬 Commands
 
@@ -69,9 +69,9 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 |-|-|
 |`!cafe`|Interactive restaurant ordering system|
 
-\---
+\
 
-\---
+\
 
 ## 🧰 Tech Stack
 
@@ -83,7 +83,7 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 |cryptography|Fernet encryption (`!encrypt`, `!decrypt`)|
 |requests|HTTP calls for `!quote` API|
 
-\---
+\
 
 ## ⚙️ Setup \& Installation
 
@@ -118,7 +118,7 @@ ALLOWED\_CHANNEL\_ID=your\_commands\_channel\_id
 python Bot.py
 ```
 
-\---
+\
 
 ## 🔐 Configuration
 
@@ -128,7 +128,7 @@ python Bot.py
 |`DISCORD\_CHANNEL`|Channel ID where the bot announces it's online|
 |`ALLOWED\_CHANNEL\_ID`|Channel ID where commands are accepted (others are ignored)|
 
-\---
+\
 
 ## 🖥️ CLI Games
 
@@ -154,7 +154,7 @@ python Games/Password\_Generator.py
 |`Rock\_Paper\_Scissors.py`|Best-of-3 RPS against the computer|
 |`Text\_Search.py`|Search for words inside large text blocks|
 
-\---
+\
 
 ## 🌐 Web Projects
 
@@ -166,7 +166,7 @@ An interactive JavaScript dashboard featuring 20+ mini-projects demonstrating DO
 
 A resource hub providing links to free tools, internet configs, and job resources.
 
-\---
+\
 
 ## 🔌 Hardware Projects
 
@@ -179,7 +179,7 @@ A two-player Arduino reaction game that measures and compares player response ti
 * **Players:** 2
 * See [`Hardware/README.md`](Hardware/README.md) for full component list and wiring pinout.
 
-\---
+\
 
 ## 🏆 Certifications
 
@@ -193,13 +193,13 @@ A two-player Arduino reaction game that measures and compares player response ti
 
 See [`Certificates/README.md`](Certificates/README.md) for full details.
 
-\---
+\
 
 ## 📄 License
 
 This project is for educational and portfolio purposes.
 
-\---
+\
 
 > Built with ❤️ using Python and discord.py
 

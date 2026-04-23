@@ -5,7 +5,7 @@ __pycache__/
 
 # Secrets
 .env
-Config.json
+config.json
 # Data files
 data/
 *.log

@@ -5,8 +5,7 @@ __pycache__/
 
 # Secrets
 .env
-Bot1.py
-Main1.py
+Config.json
 # Data files
 data/
 *.log

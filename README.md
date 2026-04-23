@@ -59,6 +59,7 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 |`!decrypt`|Decrypt a previously encrypted message|
 |`!quote`|Fetch a random inspirational quote from an API|
 |`!picker`|Pick a random item from a custom list|
+|`!weather <city>`|Get current weather (temp, humidity, conditions)|
 
 ### 🍽️ Other
 
@@ -76,7 +77,7 @@ A feature-rich Discord bot built with Python and discord.py, featuring 16 comman
 |discord.py|Discord API wrapper|
 |python-dotenv|Environment variable management|
 |cryptography|Fernet encryption (`!encrypt`, `!decrypt`)|
-|requests|HTTP calls for `!quote` API|
+|requests|HTTP calls for `!quote`/`!weather` APIs|
 
 
 ## ⚙️ Setup \& Installation

@@ -6,20 +6,11 @@ import logging
 from discord.ext import commands
 from dotenv import load_dotenv
 from Utils.Logger import setup_logging
-from Bot import (
-    Ping,
-    Calculator,
-    Rps,
-    Guess_The_Num,
-    Help,
-    Number_Game,
-    Bot_Talk,
-    Quotes,
-    Password,
-    EncryptDecrypt,
-    Random_Picker,
-    Cafe,
-)
+from Bot.Core import Ping, Help
+from Bot.Games import Rps, Guess_The_Num, Number_Game
+from Bot.Fun import Quotes, Random_Picker, Weather
+from Bot.Utilities import Calculator, Bot_Talk, TextSearch, Reminder, Cafe
+from Bot.Security import Password, EncryptDecrypt
 
 setup_logging()
 intents = discord.Intents.default()
@@ -62,7 +53,7 @@ async def on_command_error(ctx, error):
 async def on_member_join(member):
     try:
         await member.send(
-            f"Hello {member.mention}, Welcome to ✧ Meta Competition ✧! Have Fun!"
+            f"Welcome {member.mention}, Welcome to ✧ Meta Competition ✧!\nPlease make sure to check <#1454850144943083562> and <#1454885928983204056>\nHave Fun!"
         )
     except:
         pass
@@ -79,17 +70,29 @@ async def on_ready():
         logging.error("Could not find the channel to send the ready message.")
 
 
+# Core
 Ping.setup(bot)
-Calculator.setup(bot)
+Help.setup(bot)
+
+# Games
 Rps.setup(bot)
 Guess_The_Num.setup(bot)
-Help.setup(bot)
 Number_Game.setup(bot)
-Bot_Talk.setup(bot)
+
+# Fun
 Quotes.setup(bot)
+Random_Picker.setup(bot)
+Weather.setup(bot)
+
+# Utilities
+Calculator.setup(bot)
+Bot_Talk.setup(bot)
+TextSearch.setup(bot)
+Reminder.setup(bot)
+Cafe.setup(bot)
+
+# Security
 Password.setup(bot)
 EncryptDecrypt.setup(bot)
-Random_Picker.setup(bot)
-Cafe.setup(bot)
 
 bot.run(TOKEN)

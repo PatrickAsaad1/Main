@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from Utils.Logger import setup_logging
 from Bot.Core import Ping, Help
 from Bot.Games import Rps, Guess_The_Num, Number_Game
-from Bot.Fun import Quotes, Random_Picker, Weather
+from Bot.Fun import Quotes, Random_Picker, Weather, Cat_Dog
 from Bot.Utilities import Calculator, Bot_Talk, TextSearch, Reminder, Cafe
 from Bot.Security import Password, EncryptDecrypt
 
@@ -83,6 +83,7 @@ Number_Game.setup(bot)
 Quotes.setup(bot)
 Random_Picker.setup(bot)
 Weather.setup(bot)
+Cat_Dog.setup(bot)
 
 # Utilities
 Calculator.setup(bot)

@@ -27,7 +27,7 @@ def setup(bot):
         menu_prices = {"pizza": 8, "burger": 7, "tea": 2, "coffee": 3, "latte": 4}
         menu_items = ", ".join(menu_prices.keys())
 
-        await ctx.send("\n" + "=" * 40 + "\n" "     Welcome to Pat Cafe!\n" "=" * 40)
+        await ctx.send("Welcome to Pat Cafe!")
         await asyncio.sleep(0.5)
 
         orders = []

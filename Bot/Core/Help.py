@@ -45,6 +45,8 @@ def setup(bot):
         fun = ""
         fun += "`!quote` - Get a random inspirational quote\n"
         fun += "`!picker` - Create a list and pick random items\n"
+        fun += "`!cat` - Get a random cat picture\n"
+        fun += "`!dog` - Get a random dog picture\n"
         embed.add_field(name="🎉 **Fun**", value=fun, inline=False)
 
         # Utilities section
@@ -468,6 +470,32 @@ async def send_command_help(ctx, command_name):
         embed.add_field(
             name="Note",
             value="Uses Open-Meteo API. Works for virtually any city worldwide.",
+            inline=False,
+        )
+
+    elif command_name in ["cat", "kitty", "meow"]:
+        embed = discord.Embed(
+            title="🐱 `!cat`",
+            description="Get a random cat picture!",
+            color=discord.Color.pink(),
+        )
+        embed.add_field(name="Usage", value="`!cat`", inline=False)
+        embed.add_field(
+            name="Aliases",
+            value="`!Cat`, `!CAT`, `!kitty`, `!meow`",
+            inline=False,
+        )
+
+    elif command_name in ["dog", "Dog", "DOG"]:
+        embed = discord.Embed(
+            title="🐶 `!dog`",
+            description="Get a random dog picture!",
+            color=discord.Color.orange(),
+        )
+        embed.add_field(name="Usage", value="`!dog`", inline=False)
+        embed.add_field(
+            name="Aliases",
+            value="`!Dog`, `!DOG`",
             inline=False,
         )
 

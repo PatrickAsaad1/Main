@@ -1,6 +1,6 @@
 # 🤖 Discord Bot — Python Project
 
-> A feature-rich Discord bot built with Python and `discord.py`, featuring **19 commands** across utilities, games, encryption, and more. Includes CLI versions of all games and a full project portfolio.
+> A feature-rich Discord bot built with Python and `discord.py`, featuring **29 commands** across utilities, games, fun, security, and admin tools. Includes CLI versions of all games and a full project portfolio.
 
 ---
 
@@ -8,13 +8,14 @@
 
 - [✨ Features](#-features)
 - [💬 Commands](#-commands)
-  - [🔧 Utilities](#-utilities)
+  - [🔧 Utilities](#-utilities-12)
   - [🎮 Games](#-games)
-  - [🛠️ Tools](#-tools)
+  - [🎉 Fun](#-fun-8)
+  - [🔐 Security](#-security-3)
+  - [⚙️ Admin](#-admin-3)
   - [🍽️ Other](#-other)
 - [🧰 Tech Stack](#-tech-stack)
 - [⚙️ Setup & Installation](#-setup--installation)
-- [🔐 Configuration](#-configuration)
 - [🖥️ CLI Games](#-cli-games)
 - [🌐 Web Projects](#-web-projects)
 - [🔌 Hardware Projects](#-hardware-projects)
@@ -24,24 +25,22 @@
 
 ## ✨ Features
 
-| #   | Feature                                                      |
-| --- | ------------------------------------------------------------ |
-| 1   | 19 bot commands spanning utilities, games, security, and fun |
-| 2   | Channel-restricted command execution for moderation control  |
-| 3   | Automatic DM welcome messages for new members                |
-| 4   | Online announcement on bot startup                           |
-| 5   | Full CLI (terminal) game suite independent of Discord        |
-| 6   | Fernet-based message encryption and decryption               |
-| 7   | External API integration for random quotes and weather       |
-| 8   | Secure password generation                                   |
-| 9   | Reminder system with DM notifications                        |
-| 10  | Random cat and dog pictures 🐱🐶                             |
+- 29 bot commands spanning utilities, games, fun, security, and admin tools
+- Channel-restricted command execution for moderation control
+- Automatic DM welcome messages for new members
+- Online announcement on bot startup
+- Full CLI (terminal) game suite independent of Discord
+- Fernet-based message encryption and decryption
+- External API integration for quotes, weather, images, memes, and jokes
+- Secure password generation
+- QR code generator and Morse code converter
+- Config managed via `config.json` for easy customization
 
 ---
 
 ## 💬 Commands
 
-### 🔧 Utilities
+### 🔧 Utilities (12)
 
 | Command                | Description                                 |
 | ---------------------- | ------------------------------------------- |
@@ -53,6 +52,9 @@
 | `!say <message>`       | Make the bot send a message                 |
 | `!repeat <message>`    | Repeat a message back                       |
 | `!reply <message>`     | Reply directly to the user                  |
+| `!serverinfo`          | Display info about the current server       |
+| `!qr <text>`           | Generate a QR code from any text or link    |
+| `!morse <text>`        | Convert text to Morse code                  |
 | `!help`                | Display the custom embedded help menu       |
 
 ### 🎮 Games
@@ -63,17 +65,34 @@
 | `!guess`  | 3-point number guessing game with difficulties |
 | `!number` | Guess a number between 1–20 in 5 attempts      |
 
-### 🛠️ Tools
+### 🎉 Fun (8)
+
+| Command         | Description                           |
+| --------------- | ------------------------------------- |
+| `!quote`        | Fetch a random inspirational quote    |
+| `!picker`       | Pick a random item from a custom list |
+| `!cat`          | Get a random cute cat picture 🐱      |
+| `!dog`          | Get a random dog picture 🐶           |
+| `!coinflip`     | Flip a coin — heads or tails          |
+| `!roll <sides>` | Roll a dice with any number of sides  |
+| `!joke`         | Fetch a random joke from an API       |
+| `!meme`         | Get a random meme from Reddit         |
+
+### 🔐 Security (3)
 
 | Command              | Description                                         |
 | -------------------- | --------------------------------------------------- |
 | `!passgen`           | Generate a cryptographically secure password        |
 | `!encrypt <message>` | Encrypt a message using Fernet symmetric encryption |
 | `!decrypt`           | Decrypt a previously encrypted message              |
-| `!quote`             | Fetch a random inspirational quote from an API      |
-| `!picker`            | Pick a random item from a custom list               |
-| `!cat`               | Get a random cute cat picture 🐱                    |
-| `!dog`               | Get a random dog picture 🐶                         |
+
+### ⚙️ Admin (3)
+
+| Command          | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `!setchannel`    | Set the allowed channel for bot commands       |
+| `!removechannel` | Remove the current allowed channel restriction |
+| `!channels`      | List all currently configured bot channels     |
 
 ### 🍽️ Other
 
@@ -85,13 +104,13 @@
 
 ## 🧰 Tech Stack
 
-| Technology      | Purpose                                                     |
-| --------------- | ----------------------------------------------------------- |
-| `Python 3.x`    | Core language                                               |
-| `discord.py`    | Discord API wrapper                                         |
-| `python-dotenv` | Environment variable management                             |
-| `cryptography`  | Fernet encryption (`!encrypt`, `!decrypt`)                  |
-| `requests`      | HTTP calls for `!quote` / `!weather` / `!cat` / `!dog` APIs |
+| Technology      | Purpose                                    |
+| --------------- | ------------------------------------------ |
+| `Python 3.11`   | Core language                              |
+| `discord.py`    | Discord API wrapper                        |
+| `python-dotenv` | Environment variable management            |
+| `cryptography`  | Fernet encryption (`!encrypt`, `!decrypt`) |
+| `requests`      | HTTP calls for all APIs                    |
 
 ---
 
@@ -116,8 +135,6 @@ Create a `.env` file in the `Main/` directory:
 
 ```env
 DISCORD_TOKEN=your_bot_token_here
-DISCORD_CHANNEL=your_announcement_channel_id
-ALLOWED_CHANNEL_ID=your_commands_channel_id
 ```
 
 > ⚠️ **Never share your `DISCORD_TOKEN`.** This file is listed in `.gitignore` and will not be pushed to GitHub.
@@ -127,16 +144,6 @@ ALLOWED_CHANNEL_ID=your_commands_channel_id
 ```bash
 python Bot.py
 ```
-
----
-
-## 🔐 Configuration
-
-| Variable             | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `DISCORD_TOKEN`      | Your bot's secret token from the [Discord Developer Portal](https://discord.com/developers/applications) |
-| `DISCORD_CHANNEL`    | Channel ID where the bot announces it's online                                                           |
-| `ALLOWED_CHANNEL_ID` | Channel ID where commands are accepted (others are ignored)                                              |
 
 ---
 

@@ -19,6 +19,7 @@ from Bot.Fun import (
     Joke,
     Meme,
     HourlyPets,
+    Advice,
 )
 from Bot.Utilities import (
     Calculator,
@@ -144,6 +145,7 @@ ServerInfo.setup(bot)
 QR.setup(bot)
 Morse.setup(bot)
 AI.setup(bot)
+Advice.setup(bot)
 
 # Security
 Password.setup(bot)

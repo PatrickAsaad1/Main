@@ -45,6 +45,7 @@ def setup(bot):
             "`!roll` - Roll a dice (default 6-sided)\n"
             "`!joke` - Get a random dad joke\n"
             "`!meme` - Get a random meme\n"
+            "`!advice` - Get a random piece of advice\n"
         )
         embed.add_field(name="🎉 **Fun**", value=fun, inline=False)
 
@@ -652,6 +653,24 @@ async def send_command_help(ctx, command_name):
         embed.add_field(
             name="Note",
             value="Uses Pollinations AI API. Responses may vary in quality.",
+            inline=False,
+        )
+
+    elif command_name in ["advice"]:
+        embed = discord.Embed(
+            title="💡 `!advice`",
+            description="Get a random piece of advice.",
+            color=discord.Color.gold(),
+        )
+        embed.add_field(name="Usage", value="`!advice`", inline=False)
+        embed.add_field(
+            name="Aliases",
+            value="`!Advice`, `!ADVICE`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Example",
+            value="`!advice` → 💡 Never regret anything that made you smile.",
             inline=False,
         )
 

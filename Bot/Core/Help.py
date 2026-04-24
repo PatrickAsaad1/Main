@@ -52,6 +52,8 @@ def setup(bot):
             "`!ping` - Check the bot's connection latency\n"
             "`!calc <expression>` - Perform arithmetic calculations\n"
             "`!weather <city>` - Get current weather for any city\n"
+            "`!serverinfo` - Display server information\n"
+            "`!qr <text>` - Generate a QR code\n"
             "`!remind <time> <message>` - Set a reminder (e.g., `!remind 5m break`)\n"
             "`!say <message>` - The bot will DM you the message\n"
             "`!repeat <message>` - Spam a message to your DMs (max 10)\n"
@@ -570,7 +572,43 @@ async def send_command_help(ctx, command_name):
         )
         embed.add_field(
             name="Example",
-            value="`!meme` → Sends a random meme with title and upvotes",
+            value="`!meme` → Sends a random meme image",
+            inline=False,
+        )
+
+    elif command_name in ["serverinfo", "si"]:
+        embed = discord.Embed(
+            title="📊 `!serverinfo`",
+            description="Display detailed information about the current server.",
+            color=discord.Color.blue(),
+        )
+        embed.add_field(name="Usage", value="`!serverinfo`", inline=False)
+        embed.add_field(
+            name="Aliases",
+            value="`!ServerInfo`, `!SERVERINFO`, `!si`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Shows",
+            value="Server name, owner, member count, creation date, channels, and roles",
+            inline=False,
+        )
+
+    elif command_name in ["qr", "qrcode"]:
+        embed = discord.Embed(
+            title="🔲 `!qr`",
+            description="Generate a QR code from text or a URL.",
+            color=discord.Color.blue(),
+        )
+        embed.add_field(name="Usage", value="`!qr <text or URL>`", inline=False)
+        embed.add_field(
+            name="Aliases",
+            value="`!QR`, `!Qr`, `!qrcode`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Example",
+            value="`!qr https://github.com` → Sends a QR code image",
             inline=False,
         )
 

@@ -9,8 +9,28 @@ from Utils.Logger import setup_logging
 from Utils.Config import get_allowed_channels
 from Bot.Core import Ping, Help
 from Bot.Games import Rps, Guess_The_Num, Number_Game
-from Bot.Fun import Quotes, Random_Picker, Weather, Cat_Dog, CoinFlip, Roll, Joke, Meme
-from Bot.Utilities import Calculator, Bot_Talk, TextSearch, Reminder, Cafe, SetChannel, ServerInfo, QR, Morse
+from Bot.Fun import (
+    Quotes,
+    Random_Picker,
+    Weather,
+    Cat_Dog,
+    CoinFlip,
+    Roll,
+    Joke,
+    Meme,
+    HourlyPets,
+)
+from Bot.Utilities import (
+    Calculator,
+    Bot_Talk,
+    TextSearch,
+    Reminder,
+    Cafe,
+    SetChannel,
+    ServerInfo,
+    QR,
+    Morse,
+)
 from Bot.Security import Password, EncryptDecrypt
 
 setup_logging()
@@ -67,7 +87,8 @@ async def on_ready():
     print(f"✅ {bot.user} is online!")
     logging.info(f"{bot.user} has connected to Discord!")
     await bot.change_presence(activity=discord.Game(name="Made with Python 🐍"))
-
+    HourlyPets.send_pet_pic.bot = bot
+    HourlyPets.send_pet_pic.start()
     for guild in bot.guilds:
         channel_ids = get_allowed_channels(guild.id)
         if channel_ids:

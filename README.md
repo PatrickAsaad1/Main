@@ -1,122 +1,121 @@
 # 🤖 Discord Bot — Python Project
 
-> A feature-rich Discord bot built with Python and `discord.py`, featuring **29 commands** across utilities, games, fun, security, and admin tools. Includes CLI versions of all games and a full project portfolio.
-
----
-
-## 📋 Table of Contents
-
-- [✨ Features](#-features)
-- [💬 Commands](#-commands)
-  - [🔧 Utilities](#-utilities-12)
-  - [🎮 Games](#-games)
-  - [🎉 Fun](#-fun-8)
-  - [🔐 Security](#-security-3)
-  - [⚙️ Admin](#-admin-3)
-  - [🍽️ Other](#-other)
-- [🧰 Tech Stack](#-tech-stack)
-- [⚙️ Setup & Installation](#-setup--installation)
-- [🖥️ CLI Games](#-cli-games)
-- [🌐 Web Projects](#-web-projects)
-- [🔌 Hardware Projects](#-hardware-projects)
-- [🏆 Certifications](#-certifications)
+> A feature-rich Discord bot built with Python and `discord.py`, featuring **30+ commands** across utilities, games, fun, security, and admin tools.
 
 ---
 
 ## ✨ Features
 
-- 29 bot commands spanning utilities, games, fun, security, and admin tools
-- Channel-restricted command execution for moderation control
-- Automatic DM welcome messages for new members
-- Online announcement on bot startup
-- Full CLI (terminal) game suite independent of Discord
-- Fernet-based message encryption and decryption
-- External API integration for quotes, weather, images, memes, and jokes
-- Secure password generation
-- QR code generator and Morse code converter
-- Config managed via `config.json` for easy customization
+- 🚀 **30+ commands** across multiple categories
+- 💾 **Per-server SQLite database** for persistent storage
+- 🔒 Channel-restricted command execution
+- 👋 Automatic DM welcome messages for new members
+- 🧠 **AI chat with memory**
+- 🐾 Hourly pet pictures
+- 📢 Startup announcements
+- 🎮 Full CLI game suite (no Discord needed)
+- 🔐 Fernet-based encryption/decryption
+- 🌐 External API integrations (weather, memes, quotes, etc.)
+- 🔑 Secure password generation
+- 📷 QR code generator & Morse converter
+- ⚙️ **Owner-only admin panel**
+- 🧩 Config via `config.json`
 
 ---
 
 ## 💬 Commands
 
-### 🔧 Utilities (12)
+### 🔧 Utilities (13)
 
-| Command                | Description                                 |
-| ---------------------- | ------------------------------------------- |
-| `!ping`                | Check the bot's current latency             |
-| `!calc <expression>`   | Multi-operation calculator                  |
-| `!weather <city>`      | Get current weather for any city            |
-| `!remind <time> <msg>` | Set a reminder — bot DMs you when time's up |
-| `!search`              | Search for words in large text blocks       |
-| `!say <message>`       | Make the bot send a message                 |
-| `!repeat <message>`    | Repeat a message back                       |
-| `!reply <message>`     | Reply directly to the user                  |
-| `!serverinfo`          | Display info about the current server       |
-| `!qr <text>`           | Generate a QR code from any text or link    |
-| `!morse <text>`        | Convert text to Morse code                  |
-| `!help`                | Display the custom embedded help menu       |
+| Command                | Description       |
+| ---------------------- | ----------------- |
+| `!ping`                | Check bot latency |
+| `!calc <expression>`   | Calculator        |
+| `!weather <city>`      | Weather info      |
+| `!remind <time> <msg>` | Set reminder      |
+| `!search`              | Search text       |
+| `!say <message>`       | Bot sends message |
+| `!repeat <message>`    | Echo message      |
+| `!reply <message>`     | Reply to user     |
+| `!serverinfo`          | Server details    |
+| `!qr <text>`           | Generate QR code  |
+| `!morse <text>`        | Convert to Morse  |
+| `!ask <question>`      | AI chatbot        |
+| `!help`                | Help menu         |
+
+---
 
 ### 🎮 Games
 
-| Command   | Description                                    |
-| --------- | ---------------------------------------------- |
-| `!rps`    | Rock Paper Scissors — solo or multiplayer      |
-| `!guess`  | 3-point number guessing game with difficulties |
-| `!number` | Guess a number between 1–20 in 5 attempts      |
+| Command   | Description                      |
+| --------- | -------------------------------- |
+| `!rps`    | Rock Paper Scissors              |
+| `!guess`  | Guessing game (difficulty modes) |
+| `!number` | Guess 1–20                       |
 
-### 🎉 Fun (8)
+---
 
-| Command         | Description                           |
-| --------------- | ------------------------------------- |
-| `!quote`        | Fetch a random inspirational quote    |
-| `!picker`       | Pick a random item from a custom list |
-| `!cat`          | Get a random cute cat picture 🐱      |
-| `!dog`          | Get a random dog picture 🐶           |
-| `!coinflip`     | Flip a coin — heads or tails          |
-| `!roll <sides>` | Roll a dice with any number of sides  |
-| `!joke`         | Fetch a random joke from an API       |
-| `!meme`         | Get a random meme from Reddit         |
+### 🎉 Fun (10)
+
+| Command         | Description   |
+| --------------- | ------------- |
+| `!quote`        | Random quote  |
+| `!picker`       | Random picker |
+| `!cat`          | Cat image 🐱  |
+| `!dog`          | Dog image 🐶  |
+| `!coinflip`     | Heads/Tails   |
+| `!roll <sides>` | Dice roll     |
+| `!joke`         | Random joke   |
+| `!meme`         | Reddit meme   |
+| `!advice`       | Advice        |
+| `!8ball`        | Magic 8-ball  |
+
+---
 
 ### 🔐 Security (3)
 
-| Command              | Description                                         |
-| -------------------- | --------------------------------------------------- |
-| `!passgen`           | Generate a cryptographically secure password        |
-| `!encrypt <message>` | Encrypt a message using Fernet symmetric encryption |
-| `!decrypt`           | Decrypt a previously encrypted message              |
+| Command          | Description     |
+| ---------------- | --------------- |
+| `!passgen`       | Secure password |
+| `!encrypt <msg>` | Encrypt message |
+| `!decrypt`       | Decrypt message |
+
+---
 
 ### ⚙️ Admin (3)
 
-| Command          | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `!setchannel`    | Set the allowed channel for bot commands       |
-| `!removechannel` | Remove the current allowed channel restriction |
-| `!channels`      | List all currently configured bot channels     |
+| Command          | Description        |
+| ---------------- | ------------------ |
+| `!setchannel`    | Restrict commands  |
+| `!removechannel` | Remove restriction |
+| `!channels`      | List channels      |
+
+---
 
 ### 🍽️ Other
 
-| Command | Description                            |
-| ------- | -------------------------------------- |
-| `!cafe` | Interactive restaurant ordering system |
+| Command | Description                 |
+| ------- | --------------------------- |
+| `!cafe` | Interactive ordering system |
 
 ---
 
 ## 🧰 Tech Stack
 
-| Technology      | Purpose                                    |
-| --------------- | ------------------------------------------ |
-| `Python 3.11`   | Core language                              |
-| `discord.py`    | Discord API wrapper                        |
-| `python-dotenv` | Environment variable management            |
-| `cryptography`  | Fernet encryption (`!encrypt`, `!decrypt`) |
-| `requests`      | HTTP calls for all APIs                    |
+| Tech            | Purpose       |
+| --------------- | ------------- |
+| `Python 3.11`   | Core language |
+| `discord.py`    | Discord API   |
+| `python-dotenv` | Env variables |
+| `cryptography`  | Encryption    |
+| `requests`      | API calls     |
+| `sqlite3`       | Database      |
 
 ---
 
 ## ⚙️ Setup & Installation
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Clone Repo
 
 ```bash
 git clone https://github.com/idk123-bot/Main.git
@@ -129,17 +128,15 @@ cd Main
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Configure Environment Variables
-
-Create a `.env` file in the `Main/` directory:
+### 3️⃣ Setup `.env`
 
 ```env
 DISCORD_TOKEN=your_bot_token_here
 ```
 
-> ⚠️ **Never share your `DISCORD_TOKEN`.** This file is listed in `.gitignore` and will not be pushed to GitHub.
+⚠️ Never share your token.
 
-### 4️⃣ Run the Bot
+### 4️⃣ Run Bot
 
 ```bash
 python Bot.py
@@ -149,27 +146,28 @@ python Bot.py
 
 ## 🖥️ CLI Games
 
-All games have **standalone terminal versions** in the `Games/` folder — no Discord required.
+Run games without Discord:
 
 ```bash
 python Games/Rock_Paper_Scissors.py
 python Games/Guessing_Game.py
 python Games/Password_Generator.py
-# ...and more
 ```
 
-| File                     | Description                                      |
-| ------------------------ | ------------------------------------------------ |
-| `Age_Checker.py`         | Calculates your age from birth year              |
-| `Cafe.py`                | Restaurant ordering simulation                   |
-| `Calculator.py`          | Arithmetic with input validation                 |
-| `Encrypt_Decrypt.py`     | Fernet message encryption & decryption           |
-| `Guessing_Game.py`       | 3-point number guessing with difficulty settings |
-| `Number_Game.py`         | Guess a number from 1–20 in 5 attempts           |
-| `Password_Generator.py`  | Secure random password generator                 |
-| `Random_Picker.py`       | Build a list and pick a random item              |
-| `Rock_Paper_Scissors.py` | Best-of-3 RPS against the computer               |
-| `Text_Search.py`         | Search for words inside large text blocks        |
+### 📁 Available Scripts
+
+| File                     | Description         |
+| ------------------------ | ------------------- |
+| `Age_Checker.py`         | Calculate age       |
+| `Cafe.py`                | Ordering simulation |
+| `Calculator.py`          | Math tool           |
+| `Encrypt_Decrypt.py`     | Encryption          |
+| `Guessing_Game.py`       | Guessing game       |
+| `Number_Game.py`         | 1–20 game           |
+| `Password_Generator.py`  | Passwords           |
+| `Random_Picker.py`       | Random choice       |
+| `Rock_Paper_Scissors.py` | RPS                 |
+| `Text_Search.py`         | Search tool         |
 
 ---
 
@@ -177,52 +175,45 @@ python Games/Password_Generator.py
 
 ### `js-practice/`
 
-An interactive JavaScript dashboard featuring **20+ mini-projects** demonstrating DOM manipulation, event handling, APIs, and more.
+- 20+ mini JS projects (DOM, APIs, events)
 
 ### `80-archives/`
 
-A resource hub providing links to free tools, internet configs, and job resources.
+- Free tools & resources hub
 
 ---
 
 ## 🔌 Hardware Projects
 
-### ⚡ Reaction Time Trainer — `reaction_game.ino`
+### ⚡ Reaction Time Trainer
 
-A two-player Arduino reaction game that measures and compares player response times.
+| Detail   | Info        |
+| -------- | ----------- |
+| Platform | Arduino Uno |
+| Language | C++         |
+| Players  | 2           |
 
-| Detail       | Info          |
-| ------------ | ------------- |
-| **Platform** | Arduino Uno   |
-| **Language** | C++ (Arduino) |
-| **Players**  | 2             |
-
-> 📄 See [`Hardware/README.md`](Hardware/README.md) for the full component list and wiring pinout.
+📄 See `Hardware/README.md` for wiring details.
 
 ---
 
 ## 🏆 Certifications
 
-| Certificate                                  | Issuer  |
-| -------------------------------------------- | ------- |
-| Data Storage — Huawei ICT Academy            | Huawei  |
-| Cloud Computing — Huawei ICT Academy         | Huawei  |
-| Artificial Intelligence — Huawei ICT Academy | Huawei  |
-| _(+ 3 additional Huawei certifications)_     | Huawei  |
-| MCIT Egypt Nanodegree                        | Udacity |
+- Huawei ICT Academy (Data Storage, Cloud, AI + more)
+- MCIT Egypt Nanodegree — Udacity
 
-> 📄 See [`Certificates/README.md`](Certificates/README.md) for full details.
+📄 See `Certificates/README.md`
 
 ---
 
 ## 📄 License
 
-This project is for **educational and portfolio purposes**.
+Educational & portfolio use only.
 
 ---
 
 <div align="center">
 
-Built with ❤️ using **Python** and **discord.py**
+**Built with ❤️ using Python & discord.py**
 
 </div>

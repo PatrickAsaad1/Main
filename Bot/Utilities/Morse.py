@@ -7,7 +7,7 @@ logging = setup_logging()
 
 def setup(bot):
     @bot.command(name="morse", aliases=["Morse", "MORSE"])
-    async def morse(ctx):
+    async def morse(ctx, *, msg):
         logging.info(f"{ctx.author} used !morse command")
 
         MORSE_CODE = {
@@ -52,22 +52,16 @@ def setup(bot):
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-
-        try:
-            await ctx.send("What text do you want to translate to Morse code?")
-            msg = await bot.wait_for("message", timeout=30.0, check=check)
-            text = msg.content.upper()
-
-            morse_text = []
-            for char in text:
-                if char in MORSE_CODE:
-                    morse_text.append(MORSE_CODE[char])
-                else:
-                    morse_text.append(char)
-
-            result = " ".join(morse_text)
-            await ctx.send(f"📡 **Morse Code:**\n`{result}`")
-            logging.info(f"Morse code generated for: {text}")
-
-        except asyncio.TimeoutError:
-            await ctx.send("⏰ Time's up! Cancelled.")
+        if msg == "":
+            await ctx.send("❌ Please enter something to convert to Morse code!")
+            return
+        text = msg.upper()
+        morse_text = []
+        for char in text:
+            if char in MORSE_CODE:
+                morse_text.append(MORSE_CODE[char])
+            else:
+                morse_text.append(char)
+        result = " ".join(morse_text)
+        await ctx.send(f"📡 **Morse Code:**\n`{result}`")
+        logging.info(f"Morse code generated for: {text}")

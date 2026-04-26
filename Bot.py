@@ -7,7 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from Utils.Logger import setup_logging
 from Utils.Config import get_allowed_channels
-from Bot.Core import Ping, Help
+from Bot.Core import Ping, Help, Admin
 from Bot.Games import Rps, Guess_The_Num, Number_Game
 from Bot.Fun import (
     Quotes,
@@ -120,6 +120,7 @@ async def on_ready():
 # Core
 Ping.setup(bot)
 Help.setup(bot)
+Admin.setup(bot)
 
 # Games
 Rps.setup(bot)

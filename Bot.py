@@ -67,6 +67,8 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.CommandNotFound):
         logging.info(f"{ctx.author} tried unknown command: {ctx.message.content}")
         return
+    elif isinstance(error, commands.MissingRequiredArgument):
+        return
     else:
         logging.error(f"Unexpected error: {error}")
         raise error

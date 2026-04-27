@@ -47,6 +47,7 @@ def setup(bot):
             "`!meme` - Get a random meme\n"
             "`!advice` - Get a random piece of advice\n"
             "`!lyrics <Artist - Song>` - Get song lyrics\n"
+            "`!ask <question>` - Ask AI a question\n"
         )
         embed.add_field(name="🎉 **Fun**", value=fun, inline=False)
 
@@ -57,7 +58,6 @@ def setup(bot):
             "`!serverinfo` - Display server information\n"
             "`!qr <text>` - Generate a QR code\n"
             "`!morse <text>` - Convert text to Morse code\n"
-            "`!ask <question>` - Ask AI a question\n"
             "`!remind <time> <message>` - Set a reminder (e.g., `!remind 5m break`)\n"
             "`!say <message>` - The bot will DM you the message\n"
             "`!repeat <message>` - Spam a message to your DMs (max 10)\n"
@@ -70,6 +70,8 @@ def setup(bot):
             "`!setchannel <#channel>` - Add a bot commands channel\n"
             "`!removechannel <#channel>` - Remove a bot commands channel\n"
             "`!channels` - List allowed channels\n"
+            "`!setlyrics <#channel>` - Set lyrics channel\n"
+            "`!setrapnews <#channel>` - Set AI rap news channel\n"
         )
         embed.add_field(name="⚙️ **Admin**", value=admin, inline=False)
 
@@ -719,6 +721,16 @@ async def send_command_help(ctx, command_name):
         embed.add_field(
             name="`!channels`",
             value="List all allowed channels for this server.",
+            inline=False,
+        )
+        embed.add_field(
+            name="`!setlyrics <#channel>`",
+            value="Set the channel for lyrics command.",
+            inline=False,
+        )
+        embed.add_field(
+            name="`!setrapnews <#channel>`",
+            value="Set the channel for AI rap news updates.",
             inline=False,
         )
         embed.add_field(

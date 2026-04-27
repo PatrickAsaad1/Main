@@ -21,6 +21,7 @@ from Bot.Fun import (
     HourlyPets,
     Advice,
     Lyrics,
+    RapNews,
 )
 from Bot.Utilities import (
     Calculator,
@@ -94,6 +95,8 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Made with Python 🐍"))
     HourlyPets.send_pet_pic.bot = bot
     HourlyPets.send_pet_pic.start()
+    RapNews.send_rap_news.bot = bot
+    RapNews.send_rap_news.start()
     for guild in bot.guilds:
         channel_ids = get_allowed_channels(guild.id)
         if channel_ids:

@@ -6,6 +6,7 @@ from Utils.Config import (
     remove_allowed_channel,
     get_allowed_channels,
     set_lyrics_channel,
+    set_rap_news_channel,
 )
 from Utils.Logger import setup_logging
 
@@ -55,3 +56,11 @@ def setup(bot):
         logging.info(
             f"{ctx.author} set lyrics channel to {channel.name} in {ctx.guild.name}"
         )
+    @bot.command(name="setrapnews", aliases=["SetRapNews", "SETRAPNEWS"])
+    @commands.has_permissions(administrator=True)
+    async def set_rap_news(ctx, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+        set_rap_news_channel(ctx.guild.id, channel.id)
+        await ctx.send(f"✅ Rap news will now be sent to {channel.mention}!")
+        logging.info(f"{ctx.author} set rap news channel to {channel.name} in {ctx.guild.name}")

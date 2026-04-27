@@ -6,11 +6,18 @@ from Utils.Database import (
     set_lyrics_channel as db_set_lyrics,
     get_lyrics_channel as db_get_lyrics,
     setup_database,
+    set_rap_news_channel as db_set_rap_news,
+    get_rap_news_channel as db_get_rap_news,
 )
 
 setup_database()
 
+def set_rap_news_channel(guild_id, channel_id):
+    db_set_rap_news(guild_id, channel_id)
 
+def get_rap_news_channel(guild_id):
+    return db_get_rap_news(guild_id)
+    
 def get_allowed_channels(guild_id):
     results = db_get_channels(guild_id)
     return [row[0] for row in results]

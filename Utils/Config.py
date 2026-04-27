@@ -3,10 +3,11 @@ from Utils.Database import (
     get_channels as db_get_channels,
     add_channel as db_add_channel,
     remove_channel as db_remove_channel,
+    set_lyrics_channel as db_set_lyrics,
+    get_lyrics_channel as db_get_lyrics,
     setup_database,
 )
 
-# Initialize database on import
 setup_database()
 
 
@@ -21,3 +22,11 @@ def add_allowed_channel(guild_id, channel_id):
 
 def remove_allowed_channel(guild_id, channel_id):
     return db_remove_channel(guild_id, channel_id)
+
+
+def set_lyrics_channel(guild_id, channel_id):
+    db_set_lyrics(guild_id, channel_id)
+
+
+def get_lyrics_channel(guild_id):
+    return db_get_lyrics(guild_id)

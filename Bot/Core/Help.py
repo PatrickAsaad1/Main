@@ -46,6 +46,7 @@ def setup(bot):
             "`!joke` - Get a random dad joke\n"
             "`!meme` - Get a random meme\n"
             "`!advice` - Get a random piece of advice\n"
+            "`!lyrics <Artist - Song>` - Get song lyrics\n"
         )
         embed.add_field(name="🎉 **Fun**", value=fun, inline=False)
 
@@ -671,6 +672,31 @@ async def send_command_help(ctx, command_name):
         embed.add_field(
             name="Example",
             value="`!advice` → 💡 Never regret anything that made you smile.",
+            inline=False,
+        )
+
+    elif command_name in ["lyrics", "lyric"]:
+        embed = discord.Embed(
+            title="🎵 `!lyrics`",
+            description="Get the lyrics of any song.",
+            color=discord.Color.purple(),
+        )
+        embed.add_field(
+            name="Usage", value="`!lyrics <Artist> - <Song Name>`", inline=False
+        )
+        embed.add_field(
+            name="Aliases",
+            value="`!Lyrics`, `!LYRICS`, `!Lyric`, `!LYRIC`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Example",
+            value="`!lyrics Coldplay - Yellow`",
+            inline=False,
+        )
+        embed.add_field(
+            name="Note",
+            value="Uses lyrics.ovh API. Use `Artist - Song` format.",
             inline=False,
         )
 

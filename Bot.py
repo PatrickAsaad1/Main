@@ -20,6 +20,7 @@ from Bot.Fun import (
     Meme,
     HourlyPets,
     Advice,
+    Lyrics,
 )
 from Bot.Utilities import (
     Calculator,
@@ -136,6 +137,7 @@ CoinFlip.setup(bot)
 Roll.setup(bot)
 Joke.setup(bot)
 Meme.setup(bot)
+Lyrics.setup(bot)
 
 # Utilities
 Calculator.setup(bot)

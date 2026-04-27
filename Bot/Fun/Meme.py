@@ -12,13 +12,8 @@ def setup(bot):
         try:
             response = requests.get("https://meme-api.com/gimme")
             json_data = response.json()
-
-            meme_url = json_data["url"]
-
-            await ctx.send(meme_url)
-
+            await ctx.send(json_data["url"])
             logging.info(f"Meme sent from r/{json_data['subreddit']}")
-
         except Exception as e:
             logging.error(f"Meme API error: {e}")
             await ctx.send("❌ Could not fetch a meme right now. Try again later!")

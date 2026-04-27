@@ -1,3 +1,4 @@
+# Utils/Database.py
 import sqlite3
 from Utils.Logger import setup_logging
 import os
@@ -20,6 +21,9 @@ def setup_database():
     cursor = conn.cursor()
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS servers (guild_id INTEGER, channel_id INTEGER)"
+    )
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS lyrics_channels (guild_id INTEGER, channel_id INTEGER)"
     )
     conn.commit()
     conn.close()
@@ -50,10 +54,30 @@ def remove_channel(guild_id, channel_id):
     cursor = conn.cursor()
     cursor.execute(
         "DELETE FROM servers WHERE guild_id = ? AND channel_id = ?",
-        (
-            guild_id,
-            channel_id,
-        ),
+        (guild_id, channel_id),
     )
     conn.commit()
     conn.close()
+
+
+def set_lyrics_channel(guild_id, channel_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM lyrics_channels WHERE guild_id = ?", (guild_id,))
+    cursor.execute(
+        "INSERT INTO lyrics_channels(guild_id, channel_id) VALUES (?, ?)",
+        (guild_id, channel_id),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_lyrics_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT channel_id FROM lyrics_channels WHERE guild_id = ?", (guild_id,)
+    )
+    data = cursor.fetchone()
+    conn.close()
+    return data[0] if data else None

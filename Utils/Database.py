@@ -133,3 +133,11 @@ def get_pet_channel(guild_id):
     data = cursor.fetchone()
     conn.close()
     return data[0] if data else None
+
+
+def remove_lyrics_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM lyrics_channels WHERE guild_id = ?", (guild_id,))
+    conn.commit()
+    conn.close()

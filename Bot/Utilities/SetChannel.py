@@ -79,3 +79,9 @@ def setup(bot):
         logging.info(
             f"{ctx.author} set pet channel to {channel.name} in {ctx.guild.name}"
         )
+    @bot.command(name="removelyrics", aliases=["RemoveLyrics", "REMOVELYRICS"])
+    @commands.has_permissions(administrator=True)
+    async def remove_lyrics(ctx):
+        remove_lyrics_channel(ctx.guild.id)
+        await ctx.send("🗑️ Lyrics channel removed!")
+        logging.info(f"{ctx.author} removed lyrics channel in {ctx.guild.name}")

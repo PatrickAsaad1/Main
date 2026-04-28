@@ -10,6 +10,7 @@ from Utils.Database import (
     set_pet_channel as db_set_pet,
     get_pet_channel as db_get_pet,
     setup_database,
+    remove_lyrics_channel as db_remove_lyrics,
 )
 
 setup_database()
@@ -50,3 +51,7 @@ def set_pet_channel(guild_id, channel_id):
 
 def get_pet_channel(guild_id):
     return db_get_pet(guild_id)
+
+
+def remove_lyrics_channel(guild_id):
+    db_remove_lyrics(guild_id)

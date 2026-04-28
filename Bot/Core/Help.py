@@ -70,7 +70,7 @@ def setup(bot):
             "`!setchannel <#channel>` - Add a bot commands channel\n"
             "`!removechannel <#channel>` - Remove a bot commands channel\n"
             "`!channels` - List allowed channels\n"
-            "`!setlyrics <#channel>` - Set lyrics channel\n"
+            "`!setlyrics <#channel>` / `!removelyrics` - Set/Remove lyrics channel\n"
             "`!setrapnews <#channel>` - Set AI rap news channel\n"
             "`!sethourlypets <#channel>` - Set hourly pet pictures channel\n"
         )
@@ -710,13 +710,8 @@ async def send_command_help(ctx, command_name):
             color=discord.Color.purple(),
         )
         embed.add_field(
-            name="`!setchannel <#channel>`",
-            value="Add a channel where commands can be used.",
-            inline=False,
-        )
-        embed.add_field(
-            name="`!removechannel <#channel>`",
-            value="Remove a channel from the allowed list.",
+            name="`!setchannel <#channel>` / `!removechannel <#channel>`",
+            value="Add or remove a channel where commands can be used.",
             inline=False,
         )
         embed.add_field(
@@ -725,8 +720,8 @@ async def send_command_help(ctx, command_name):
             inline=False,
         )
         embed.add_field(
-            name="`!setlyrics <#channel>`",
-            value="Set the channel for lyrics command.",
+            name="`!setlyrics <#channel>` / `!removelyrics`",
+            value="Set or remove the lyrics command channel.",
             inline=False,
         )
         embed.add_field(

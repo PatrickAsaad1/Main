@@ -6,8 +6,10 @@ from Utils.Config import (
     remove_allowed_channel,
     get_allowed_channels,
     set_lyrics_channel,
+    remove_lyrics_channel,
     set_rap_news_channel,
     set_pet_channel,
+    set_game_news_channel,
 )
 from Utils.Logger import setup_logging
 
@@ -58,6 +60,13 @@ def setup(bot):
             f"{ctx.author} set lyrics channel to {channel.name} in {ctx.guild.name}"
         )
 
+    @bot.command(name="removelyrics", aliases=["RemoveLyrics", "REMOVELYRICS"])
+    @commands.has_permissions(administrator=True)
+    async def remove_lyrics(ctx):
+        remove_lyrics_channel(ctx.guild.id)
+        await ctx.send("🗑️ Lyrics channel removed!")
+        logging.info(f"{ctx.author} removed lyrics channel in {ctx.guild.name}")
+
     @bot.command(name="setrapnews", aliases=["SetRapNews", "SETRAPNEWS"])
     @commands.has_permissions(administrator=True)
     async def set_rap_news(ctx, channel: discord.TextChannel = None):
@@ -79,9 +88,14 @@ def setup(bot):
         logging.info(
             f"{ctx.author} set pet channel to {channel.name} in {ctx.guild.name}"
         )
-    @bot.command(name="removelyrics", aliases=["RemoveLyrics", "REMOVELYRICS"])
+
+    @bot.command(name="setgamenews", aliases=["SetGameNews", "SETGAMENEWS"])
     @commands.has_permissions(administrator=True)
-    async def remove_lyrics(ctx):
-        remove_lyrics_channel(ctx.guild.id)
-        await ctx.send("🗑️ Lyrics channel removed!")
-        logging.info(f"{ctx.author} removed lyrics channel in {ctx.guild.name}")
+    async def set_game_news(ctx, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+        set_game_news_channel(ctx.guild.id, channel.id)
+        await ctx.send(f"✅ Gaming news will be sent to {channel.mention}!")
+        logging.info(
+            f"{ctx.author} set game news channel to {channel.name} in {ctx.guild.name}"
+        )

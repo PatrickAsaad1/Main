@@ -5,12 +5,14 @@ from Utils.Database import (
     remove_channel as db_remove_channel,
     set_lyrics_channel as db_set_lyrics,
     get_lyrics_channel as db_get_lyrics,
+    remove_lyrics_channel as db_remove_lyrics,
     set_rap_news_channel as db_set_rap_news,
     get_rap_news_channel as db_get_rap_news,
     set_pet_channel as db_set_pet,
     get_pet_channel as db_get_pet,
+    set_game_news_channel as db_set_game_news,
+    get_game_news_channel as db_get_game_news,
     setup_database,
-    remove_lyrics_channel as db_remove_lyrics,
 )
 
 setup_database()
@@ -37,6 +39,10 @@ def get_lyrics_channel(guild_id):
     return db_get_lyrics(guild_id)
 
 
+def remove_lyrics_channel(guild_id):
+    db_remove_lyrics(guild_id)
+
+
 def set_rap_news_channel(guild_id, channel_id):
     db_set_rap_news(guild_id, channel_id)
 
@@ -53,5 +59,9 @@ def get_pet_channel(guild_id):
     return db_get_pet(guild_id)
 
 
-def remove_lyrics_channel(guild_id):
-    db_remove_lyrics(guild_id)
+def set_game_news_channel(guild_id, channel_id):
+    db_set_game_news(guild_id, channel_id)
+
+
+def get_game_news_channel(guild_id):
+    return db_get_game_news(guild_id)

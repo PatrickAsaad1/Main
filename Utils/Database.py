@@ -31,6 +31,9 @@ def setup_database():
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS pet_channels (guild_id INTEGER, channel_id INTEGER)"
     )
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS game_news_channels (guild_id INTEGER, channel_id INTEGER)"
+    )
     conn.commit()
     conn.close()
 
@@ -89,6 +92,14 @@ def get_lyrics_channel(guild_id):
     return data[0] if data else None
 
 
+def remove_lyrics_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM lyrics_channels WHERE guild_id = ?", (guild_id,))
+    conn.commit()
+    conn.close()
+
+
 def set_rap_news_channel(guild_id, channel_id):
     conn = connect()
     cursor = conn.cursor()
@@ -135,9 +146,24 @@ def get_pet_channel(guild_id):
     return data[0] if data else None
 
 
-def remove_lyrics_channel(guild_id):
+def set_game_news_channel(guild_id, channel_id):
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM lyrics_channels WHERE guild_id = ?", (guild_id,))
+    cursor.execute("DELETE FROM game_news_channels WHERE guild_id = ?", (guild_id,))
+    cursor.execute(
+        "INSERT INTO game_news_channels(guild_id, channel_id) VALUES (?, ?)",
+        (guild_id, channel_id),
+    )
     conn.commit()
     conn.close()
+
+
+def get_game_news_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT channel_id FROM game_news_channels WHERE guild_id = ?", (guild_id,)
+    )
+    data = cursor.fetchone()
+    conn.close()
+    return data[0] if data else None

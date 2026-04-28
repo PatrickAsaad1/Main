@@ -22,6 +22,7 @@ from Bot.Fun import (
     Advice,
     Lyrics,
     RapNews,
+    GameNews,
 )
 from Bot.Utilities import (
     Calculator,
@@ -97,6 +98,8 @@ async def on_ready():
     HourlyPets.send_pet_pic.start()
     RapNews.send_rap_news.bot = bot
     RapNews.send_rap_news.start()
+    GameNews.send_game_news.bot = bot
+    GameNews.send_game_news.start()
     for guild in bot.guilds:
         channel_ids = get_allowed_channels(guild.id)
         if channel_ids:

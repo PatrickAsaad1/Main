@@ -72,6 +72,7 @@ def setup(bot):
             "`!channels` - List allowed channels\n"
             "`!setlyrics <#channel>` - Set lyrics channel\n"
             "`!setrapnews <#channel>` - Set AI rap news channel\n"
+            "`!sethourlypets <#channel>` - Set hourly pet pictures channel\n"
         )
         embed.add_field(name="⚙️ **Admin**", value=admin, inline=False)
 
@@ -731,6 +732,11 @@ async def send_command_help(ctx, command_name):
         embed.add_field(
             name="`!setrapnews <#channel>`",
             value="Set the channel for AI rap news updates.",
+            inline=False,
+        )
+        embed.add_field(
+            name="`!sethourlypets <#channel>`",
+            value="Set the channel for hourly cat/dog pictures.",
             inline=False,
         )
         embed.add_field(

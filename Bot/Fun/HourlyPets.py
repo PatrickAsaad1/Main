@@ -2,10 +2,11 @@
 import requests
 from discord.ext import tasks
 from Utils.Logger import setup_logging
+from Utils.Config import get_pet_channel
 
 logging = setup_logging()
 
-send_cat = True  # Start with cat
+send_cat = True
 
 
 @tasks.loop(hours=1)
@@ -28,12 +29,17 @@ async def send_pet_pic():
             emoji = "🐶"
             send_cat = True
 
-        # Send to the first available channel
         for guild in send_pet_pic.bot.guilds:
-            for channel in guild.text_channels:
-                if channel.permissions_for(guild.me).send_messages:
+            channel_id = get_pet_channel(guild.id)
+            if channel_id:
+                channel = guild.get_channel(channel_id)
+                if channel and channel.permissions_for(guild.me).send_messages:
                     await channel.send(f"{emoji} **Hourly Pet Picture!**\n{url}")
-                    break
+            else:
+                for channel in guild.text_channels:
+                    if channel.permissions_for(guild.me).send_messages:
+                        await channel.send(f"{emoji} **Hourly Pet Picture!**\n{url}")
+                        break
 
         logging.info(f"Hourly pet sent: {'cat' if not send_cat else 'dog'}")
     except Exception as e:

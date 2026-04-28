@@ -10,6 +10,8 @@ from Utils.Config import (
     set_rap_news_channel,
     set_pet_channel,
     set_game_news_channel,
+    remove_rap_news_channel,
+    remove_game_news_channel,
 )
 from Utils.Logger import setup_logging
 
@@ -99,3 +101,16 @@ def setup(bot):
         logging.info(
             f"{ctx.author} set game news channel to {channel.name} in {ctx.guild.name}"
         )
+    @bot.command(name="removerapnews", aliases=["RemoveRapNews", "REMOVERAPNEWS"])
+    @commands.has_permissions(administrator=True)
+    async def remove_rap_news(ctx):
+        remove_rap_news_channel(ctx.guild.id)
+        await ctx.send("🗑️ Rap news channel removed!")
+        logging.info(f"{ctx.author} removed rap news channel in {ctx.guild.name}")
+
+    @bot.command(name="removegamenews", aliases=["RemoveGameNews", "REMOVEGAMENEWS"])
+    @commands.has_permissions(administrator=True)
+    async def remove_game_news(ctx):
+        remove_game_news_channel(ctx.guild.id)
+        await ctx.send("🗑️ Gaming news channel removed!")
+        logging.info(f"{ctx.author} removed game news channel in {ctx.guild.name}")

@@ -13,9 +13,19 @@ from Utils.Database import (
     set_game_news_channel as db_set_game_news,
     get_game_news_channel as db_get_game_news,
     setup_database,
+    remove_rap_news_channel as db_remove_rap_news,
+    remove_game_news_channel as db_remove_game_news,
 )
 
 setup_database()
+
+
+def remove_rap_news_channel(guild_id):
+    db_remove_rap_news(guild_id)
+
+
+def remove_game_news_channel(guild_id):
+    db_remove_game_news(guild_id)
 
 
 def get_allowed_channels(guild_id):

@@ -70,9 +70,9 @@ def setup(bot):
             "`!setchannel <#channel>` / `!removechannel <#channel>` - Manage command channels\n"
             "`!channels` - List allowed channels\n"
             "`!setlyrics <#channel>` / `!removelyrics` - Set/Remove lyrics channel\n"
-            "`!setrapnews <#channel>` - Set AI rap news channel\n"
+            "`!setrapnews <#channel>` / `!removerapnews` - Set/Remove rap news channel\n"
+            "`!setgamenews <#channel>` / `!removegamenews` - Set/Remove gaming news channel\n"
             "`!sethourlypets <#channel>` - Set hourly pet pictures channel\n"
-            "`!setgamenews <#channel>` - Set gaming news channel\n"
         )
         embed.add_field(name="⚙️ **Admin**", value=admin, inline=False)
 
@@ -725,18 +725,18 @@ async def send_command_help(ctx, command_name):
             inline=False,
         )
         embed.add_field(
-            name="`!setrapnews <#channel>`",
-            value="Set the channel for AI rap news updates.",
+            name="`!setrapnews <#channel>` / `!removerapnews`",
+            value="Set or remove the AI rap news channel.",
+            inline=False,
+        )
+        embed.add_field(
+            name="`!setgamenews <#channel>` / `!removegamenews`",
+            value="Set or remove the gaming news channel.",
             inline=False,
         )
         embed.add_field(
             name="`!sethourlypets <#channel>`",
             value="Set the channel for hourly cat/dog pictures.",
-            inline=False,
-        )
-        embed.add_field(
-            name="`!setgamenews <#channel>`",
-            value="Set the channel for gaming news updates.",
             inline=False,
         )
         embed.add_field(

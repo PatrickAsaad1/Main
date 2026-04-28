@@ -167,3 +167,19 @@ def get_game_news_channel(guild_id):
     data = cursor.fetchone()
     conn.close()
     return data[0] if data else None
+
+
+def remove_rap_news_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM rap_news_channels WHERE guild_id = ?", (guild_id,))
+    conn.commit()
+    conn.close()
+
+
+def remove_game_news_channel(guild_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM game_news_channels WHERE guild_id = ?", (guild_id,))
+    conn.commit()
+    conn.close()

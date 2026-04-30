@@ -118,7 +118,7 @@
 ### 1️⃣ Clone Repo
 
 ```bash
-git clone https://github.com/idk123-bot/Main.git
+git clone https://github.com/PatrickAsaad1/Main.git
 cd Main
 ```
 

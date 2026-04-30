@@ -1,12 +1,12 @@
 # 🤖 Discord Bot — Python Project
 
-> A feature-rich Discord bot built with Python and `discord.py`, featuring **30+ commands** across utilities, games, fun, security, and admin tools.
+> A feature-rich Discord bot built with Python and `discord.py`, featuring **36+ commands** across utilities, games, fun, security, and admin tools.
 
 ---
 
 ## ✨ Features
 
-- 🚀 **30+ commands** across multiple categories
+- 🚀 **36+ commands** across multiple categories
 - 💾 **Per-server SQLite database** for persistent storage
 - 🔒 Channel-restricted command execution
 - 👋 Automatic DM welcome messages for new members

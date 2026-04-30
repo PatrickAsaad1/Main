@@ -19,7 +19,6 @@
 - 🔑 Secure password generation
 - 📷 QR code generator & Morse converter
 - ⚙️ **Owner-only admin panel**
-- 🧩 Config via `config.json`
 
 ---
 

@@ -1,32 +1,40 @@
-# Bot/Fun/Lyrics.py
+import discord
 import requests
-from Utils.Logger import setup_logging
 from Utils.Config import get_lyrics_channel
+from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="lyrics", aliases=["Lyrics", "LYRICS", "lyric", "Lyric", "LYRIC"])
-    async def lyric(ctx, *, query: str):
-        logging.info(f"{ctx.author} used lyrics command")
+
+    @bot.tree.command(
+        name="lyrics",
+        description="Get lyrics for a song. Format: Artist - Song Name",
+    )
+    async def lyric(interaction: discord.Interaction, query: str):
+        logging.info(f"{interaction.user} used lyrics command")
 
         # Channel restriction
-        lyrics_channel = get_lyrics_channel(ctx.guild.id)
-        if lyrics_channel and ctx.channel.id != lyrics_channel:
-            channel = ctx.guild.get_channel(lyrics_channel)
+        lyrics_channel = get_lyrics_channel(interaction.guild.id)
+        if lyrics_channel and interaction.channel.id != lyrics_channel:
+            channel = interaction.guild.get_channel(lyrics_channel)
             if channel:
-                await ctx.reply(f"❌ This command only works in {channel.mention}!")
+                await interaction.response.send_message(
+                    f"❌ This command only works in {channel.mention}!"
+                )
             return
 
         if not query:
-            await ctx.reply(
-                "❌ Usage: `!lyrics Artist - Song Name`\nExample: `!lyrics Coldplay - Yellow`"
+            await interaction.response.send_message(
+                "❌ Usage: `/lyrics Artist - Song Name`\nExample: `/lyrics Coldplay - Yellow`"
             )
             return
 
         if " - " not in query:
-            await ctx.reply("❌ Please use format: `!lyrics Artist - Song Name`")
+            await interaction.response.send_message(
+                "❌ Please use format: `Artist - Song Name`"
+            )
             return
 
         try:
@@ -51,19 +59,29 @@ def setup(bot):
                         break
 
             if not lyrics:
-                await ctx.reply(f"❌ Lyrics not found for **{song}** by **{artist}**")
+                await interaction.response.send_message(
+                    f"❌ Lyrics not found for **{song}** by **{artist}**"
+                )
                 return
 
             if len(lyrics) > 1900:
-                await ctx.reply(f"🎵 **{song}** by **{artist}**\n")
+                await interaction.response.send_message(
+                    f"🎵 **{song}** by **{artist}**\n"
+                )
                 for i in range(0, len(lyrics), 1900):
                     chunk = lyrics[i : i + 1900]
-                    await ctx.send(chunk)
+                    await interaction.followup.send(
+                        chunk
+                    )  # FIXED: Use followup for subsequent messages
             else:
-                await ctx.reply(f"🎵 **{song}** by **{artist}**\n\n{lyrics}")
+                await interaction.response.send_message(
+                    f"🎵 **{song}** by **{artist}**\n\n{lyrics}"
+                )
 
             logging.info(f"Lyrics shown for {song} by {artist}")
 
         except Exception as e:
             logging.error(f"Lyrics API error: {e}")
-            await ctx.reply("❌ Could not fetch lyrics. Try again later!")
+            await interaction.response.send_message(
+                "❌ Could not fetch lyrics. Try again later!"
+            )

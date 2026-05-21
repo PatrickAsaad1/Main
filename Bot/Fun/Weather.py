@@ -1,4 +1,4 @@
-# Bot/Weather.py
+import discord
 import requests
 from Utils.Logger import setup_logging
 
@@ -6,17 +6,19 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="weather", aliases=["Weather", "WEATHER", "temp", "Temp"])
-    async def weather(ctx, *, city: str = None):
-        """Get weather for any city in the world."""
 
+    @bot.tree.command(
+        name="weather", description="Get weather for any city in the world."
+    )
+    async def weather(interaction: discord.Interaction, city: str = None):
+        """Get weather for any city in the world."""
         if not city:
-            await ctx.reply(
-                "❌ Please provide a city: `!weather Cairo` or `!weather London`"
+            await interaction.response.send_message(
+                "❌ Please provide a city: `/weather Cairo` or `/weather London`"
             )
             return
 
-        logging.info(f"{ctx.author} requested weather for: {city}")
+        logging.info(f"{interaction.user} requested weather for: {city}")
 
         # Weather code to emoji
         weather_codes = {
@@ -45,7 +47,9 @@ def setup(bot):
             geo_data = geo_response.json()
 
             if not geo_data.get("results"):
-                await ctx.reply(f"❌ City '{city}' not found! Check spelling.")
+                await interaction.response.send_message(
+                    f"❌ City '{city}' not found! Check spelling."
+                )
                 return
 
             location = geo_data["results"][0]
@@ -79,11 +83,15 @@ def setup(bot):
             msg += f"💨 Wind: {wind} km/h"
 
             logging.info(f"Weather sent for {location_str}: {temp}°C, {desc}")
-            await ctx.reply(msg)
+            await interaction.response.send_message(msg)
 
         except requests.exceptions.Timeout:
-            await ctx.reply("❌ Request timed out. Try again later.")
+            await interaction.response.send_message(
+                "❌ Request timed out. Try again later."
+            )
             logging.error("Weather API timeout")
         except Exception as e:
-            await ctx.reply("❌ Couldn't fetch weather. Try again later!")
+            await interaction.response.send_message(
+                "❌ Couldn't fetch weather. Try again later!"
+            )
             logging.error(f"Weather error: {e}")

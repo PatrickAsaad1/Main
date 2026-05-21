@@ -1,4 +1,4 @@
-# Bot/Fun/Roll.py
+import discord
 import random
 from Utils.Logger import setup_logging
 
@@ -6,8 +6,11 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="roll", aliases=["Roll", "ROLL", "dice", "Dice"])
-    async def roll(ctx):
-        logging.info(f"{ctx.author} used !roll command")
+
+    @bot.tree.command(name="roll", description="Roll a six-sided die.")
+    async def roll(interaction: discord.Interaction):
+        logging.info(
+            f"{interaction.user} used /roll command"
+        )  # FIXED: changed !roll to /roll
         result = random.randint(1, 6)
-        await ctx.reply(f"🎲 You rolled a **{result}**!")
+        await interaction.response.send_message(f"🎲 You rolled a **{result}**!")

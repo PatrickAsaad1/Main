@@ -1,30 +1,34 @@
-# games/random_picker.py
-from Utils.Logger import setup_logging
-import random
 import asyncio
+import random
+import discord
 from Utils.Helpers import returnx
+from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="picker", aliases=["Picker", "PICKER", "Wheel"])
-    async def Picker(ctx):
+
+    @bot.tree.command(
+        name="picker",
+        description="Create a list of items and randomly pick from it.",
+    )
+    async def Picker(interaction: discord.Interaction):
         """Create a list of items and randomly pick from it."""
-        logging.info(f"{ctx.author} selected random picker")
+        logging.info(f"{interaction.user} selected random picker")
         choices = []
 
-        await ctx.reply(
+        await interaction.response.send_message(
             "===== RANDOM PICKER WHEEL =====\n"
             "Commands: 'done' = finish list, 'quit' to return to main menu"
         )
 
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return m.author == interaction.user and m.channel == interaction.channel
 
         while True:
             try:
-                await ctx.send(f"Enter item #{len(choices)+1}: ")
+                await interaction.channel.send(f"Enter item #{len(choices)+1}: ")
                 user_input = await bot.wait_for("message", timeout=30.0, check=check)
                 content = user_input.content
 
@@ -35,42 +39,48 @@ def setup(bot):
 
                 if content_lower == "done":
                     logging.info(
-                        f"{ctx.author} finished building the list for random picker"
+                        f"{interaction.user} finished building the list for random picker"
                     )
                     break
                 elif content_lower == "quit":
-                    await ctx.reply("👋 Game cancelled!")
+                    await interaction.channel.send("👋 Game cancelled!")
                     return
                 elif content.strip():
                     if content in choices:
-                        await ctx.reply(f"❌ `{content}` is already in the list!")
-                        logging.info(f"{ctx.author} tried to add duplicate: {content}")
+                        await interaction.channel.send(
+                            f"❌ `{content}` is already in the list!"
+                        )
+                        logging.info(
+                            f"{interaction.user} tried to add duplicate: {content}"
+                        )
                         continue
                     choices.append(content)
-                    await ctx.reply(f"✅ Added: {content}")
+                    await interaction.channel.send(f"✅ Added: {content}")
                     logging.info(f"Current list: {choices}")
                 else:
-                    await ctx.reply("❌ Please enter a valid item!")
+                    await interaction.channel.send("❌ Please enter a valid item!")
                     logging.warning("User entered empty item")
             except asyncio.TimeoutError:
-                await ctx.send("⏰ Time's up! Cancelled.")
+                await interaction.channel.send("⏰ Time's up! Cancelled.")
                 return
 
-        await ctx.reply(f"📋 Your list ({len(choices)} items): {', '.join(choices)}")
+        await interaction.channel.send(
+            f"📋 Your list ({len(choices)} items): {', '.join(choices)}"
+        )
 
         try:
-            await ctx.reply("🗑️ Do you want to remove any items? (y/n)")
+            await interaction.channel.send("🗑️ Do you want to remove any items? (y/n)")
             remove_response = await bot.wait_for("message", timeout=30.0, check=check)
 
             if returnx(remove_response.content):
                 return
 
             if remove_response.content.lower() in ["yes", "y"]:
-                await ctx.reply(f"Current items (1-{len(choices)}):")
+                await interaction.channel.send(f"Current items (1-{len(choices)}):")
                 for i, item in enumerate(choices, 1):
-                    await ctx.reply(f"  {i}. {item}")
+                    await interaction.channel.send(f"  {i}. {item}")
 
-                await ctx.reply(
+                await interaction.channel.send(
                     "Enter the number(s) to remove (comma-separated, or 'all'):"
                 )
                 remove_input = await bot.wait_for("message", timeout=30.0, check=check)
@@ -82,7 +92,7 @@ def setup(bot):
 
                 if remove_content == "all":
                     choices.clear()
-                    await ctx.reply("🗑️ All items removed!")
+                    await interaction.channel.send("🗑️ All items removed!")
                 else:
                     try:
                         indices = [
@@ -93,36 +103,45 @@ def setup(bot):
                         for idx in indices:
                             if 0 <= idx < len(choices):
                                 removed_item = choices.pop(idx)
-                                await ctx.reply(f"✅ Removed: {removed_item}")
+                                await interaction.channel.send(
+                                    f"✅ Removed: {removed_item}"
+                                )
                             else:
-                                await ctx.reply(f"⚠️ Invalid index: {idx + 1}")
+                                await interaction.channel.send(
+                                    f"⚠️ Invalid index: {idx + 1}"
+                                )
 
                         if not choices:
-                            await ctx.reply("No items left in the list!")
+                            await interaction.channel.send("No items left in the list!")
                             return
                     except ValueError:
-                        await ctx.reply(
+                        await interaction.channel.send(
                             "❌ Invalid input! Please enter numbers separated by commas."
                         )
+                        return  # FIXED: Added return to prevent continuing with invalid input
 
                 if choices:
-                    await ctx.reply(f"📋 Updated list: {', '.join(choices)}")
+                    await interaction.channel.send(
+                        f"📋 Updated list: {', '.join(choices)}"
+                    )
             else:
-                await ctx.reply("✅ Keeping the list as is.")
+                await interaction.channel.send("✅ Keeping the list as is.")
 
         except asyncio.TimeoutError:
-            await ctx.send("⏰ Time's up! Skipping removal.")
+            await interaction.channel.send("⏰ Time's up! Skipping removal.")
 
         if not choices:
-            await ctx.send("No items to pick from!")
+            await interaction.channel.send("No items to pick from!")
             return
 
         while True:
             winner = random.choice(choices)
-            await ctx.send(f"🎲 **The computer picks:** --- {winner} ---")
+            await interaction.channel.send(
+                f"🎲 **The computer picks:** --- {winner} ---"
+            )
 
             try:
-                await ctx.send("Pick again? (y/n or 'quit' to exit): ")
+                await interaction.channel.send("Pick again? (y/n or 'quit' to exit): ")
                 pick_another = await bot.wait_for("message", timeout=30.0, check=check)
 
                 if returnx(pick_another.content):
@@ -131,20 +150,22 @@ def setup(bot):
                 pick_content = pick_another.content.lower()
 
                 if pick_content in ["n", "no"]:
-                    await ctx.reply("Thanks for using the random picker!")
-                    logging.info(f"{ctx.author} finished using the random picker")
+                    await interaction.channel.send(
+                        "Thanks for using the random picker!"
+                    )
+                    logging.info(f"{interaction.user} finished using the random picker")
                     return
                 elif pick_content in ["y", "yes"]:
                     continue
                 elif pick_content == "quit":
-                    await ctx.reply("👋 Game cancelled!")
+                    await interaction.channel.send("👋 Game cancelled!")
                     return
                 else:
-                    await ctx.reply("❌ Please enter y, n, or quit.")
+                    await interaction.channel.send("❌ Please enter y, n, or quit.")
                     logging.warning(
-                        f"{ctx.author} entered invalid input: {pick_content}"
+                        f"{interaction.user} entered invalid input: {pick_content}"
                     )
                     continue
             except asyncio.TimeoutError:
-                await ctx.send("⏰ Time's up! Cancelled.")
+                await interaction.channel.send("⏰ Time's up! Cancelled.")
                 return

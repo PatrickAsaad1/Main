@@ -1,6 +1,5 @@
-# Bot_games/rps.py
-import random
 import asyncio
+import random
 import discord
 from Utils.Logger import setup_logging
 
@@ -8,24 +7,31 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="rps", aliases=["Rps", "RPS", "RPs", "rPs", "rpS"])
-    async def rps(ctx):
-        logging.info(f"RPS game started by: {ctx.author}")
 
-        await ctx.send("👥 Do you want to play with a friend? (yes/no)")
+    @bot.tree.command(
+        name="rps",
+        description="Play Rock Paper Scissors against the bot or a friend.",
+    )
+    async def rps(interaction: discord.Interaction):
+        logging.info(f"RPS game started by: {interaction.user}")
+
+        # Initial prompt inside the channel context
+        await interaction.response.send_message(
+            "👥 Do you want to play with a friend? (yes/no)"
+        )
 
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return m.author == interaction.user and m.channel == interaction.channel
 
         try:
             msg = await bot.wait_for("message", timeout=30.0, check=check)
             play_with_friend = msg.content.lower() in ["yes", "y"]
         except asyncio.TimeoutError:
-            await ctx.send("⏰ Time's up! Starting solo game...")
+            await interaction.channel.send("⏰ Time's up! Starting solo game...")
             play_with_friend = False
 
         if play_with_friend:
-            await ctx.send(
+            await interaction.channel.send(
                 "👤 Mention the friend you want to play with! (e.g., `@Friend`)"
             )
 
@@ -33,41 +39,45 @@ def setup(bot):
                 msg = await bot.wait_for("message", timeout=30.0, check=check)
                 if msg.mentions:
                     opponent = msg.mentions[0]
-                    if opponent == ctx.author:
-                        await ctx.send("❌ You can't play against yourself!")
+                    if opponent == interaction.user:
+                        await interaction.channel.send(
+                            "❌ You can't play against yourself!"
+                        )
                         return
                     if opponent.bot:
-                        await ctx.send(
+                        await interaction.channel.send(
                             "❌ You can't play against a bot! Use solo mode instead."
                         )
                         return
 
-                    await multiplayer_rps(ctx, bot, opponent)
+                    await multiplayer_rps(interaction, bot, opponent)
                 else:
-                    await ctx.send("❌ No user mentioned! Starting solo game...")
-                    await solo_rps(ctx, bot)
+                    await interaction.channel.send(
+                        "❌ No user mentioned! Starting solo game..."
+                    )
+                    await solo_rps(interaction, bot)
             except asyncio.TimeoutError:
-                await ctx.send("⏰ Time's up! Starting solo game...")
-                await solo_rps(ctx, bot)
+                await interaction.channel.send("⏰ Time's up! Starting solo game...")
+                await solo_rps(interaction, bot)
         else:
-            await solo_rps(ctx, bot)
+            await solo_rps(interaction, bot)
 
 
-async def solo_rps(ctx, bot):
+async def solo_rps(interaction: discord.Interaction, bot):
     choices = ["rock", "paper", "scissors"]
     player_score = 0
     computer_score = 0
 
     def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
+        return m.author == interaction.user and m.channel == interaction.channel
 
-    await ctx.send(
+    await interaction.channel.send(
         "🎮 **Rock Paper Scissors** - First to 3 wins!\n"
         "Type `rock`, `paper`, or `scissors`. Type `quit` to stop."
     )
 
     while player_score < 3 and computer_score < 3:
-        await ctx.send(
+        await interaction.channel.send(
             f"🏆 Score: You **{player_score}** | Computer **{computer_score}**\n"
             f"🎯 Your choice (`rock`/`paper`/`scissors`):"
         )
@@ -77,11 +87,13 @@ async def solo_rps(ctx, bot):
             choice = msg.content.lower()
 
             if choice == "quit":
-                await ctx.send("👋 Game cancelled!")
+                await interaction.channel.send("👋 Game cancelled!")
                 return
 
             if choice not in choices:
-                await ctx.send("❌ Invalid! Choose: `rock`, `paper`, or `scissors`")
+                await interaction.channel.send(
+                    "❌ Invalid! Choose: `rock`, `paper`, or `scissors`"
+                )
                 continue
 
             computer = random.choice(choices)
@@ -99,65 +111,93 @@ async def solo_rps(ctx, bot):
                 result = "❌ Computer wins this round!"
                 computer_score += 1
 
-            await ctx.send(f"🤖 Computer chose: **{computer}**\n{result}")
+            await interaction.channel.send(
+                f"🤖 Computer chose: **{computer}**\n{result}"
+            )
             await asyncio.sleep(1)
 
         except asyncio.TimeoutError:
-            await ctx.send("⏰ Time's up! Game cancelled.")
+            await interaction.channel.send("⏰ Time's up! Game cancelled.")
             return
 
     if player_score == 3:
-        await ctx.send(f"\n🎉🎉🎉 **YOU WIN!** {player_score}-{computer_score} 🎉🎉🎉")
+        await interaction.channel.send(
+            f"\n🎉🎉🎉 **YOU WIN!** {player_score}-{computer_score} 🎉🎉🎉"
+        )
     else:
-        await ctx.send(f"\n💻 **COMPUTER WINS!** {computer_score}-{player_score} 💻")
+        await interaction.channel.send(
+            f"\n💻 **COMPUTER WINS!** {computer_score}-{player_score} 💻"
+        )
 
     logging.info(
-        f"RPS game ended: {ctx.author} - Final score {player_score}-{computer_score}"
+        f"RPS game ended: {interaction.user} - Final score {player_score}-{computer_score}"
     )
-    await ask_play_again(ctx, bot, solo_rps)
+    await ask_play_again(interaction, bot, solo_rps)
 
 
-async def multiplayer_rps(ctx, bot, opponent):
+async def multiplayer_rps(interaction: discord.Interaction, bot, opponent):
     choices = ["rock", "paper", "scissors"]
-    player1 = ctx.author
+    player1 = interaction.user
     player2 = opponent
     player1_score = 0
     player2_score = 0
 
-    await ctx.send(
+    await interaction.channel.send(
         f"🎮 **{player1.display_name} vs {player2.display_name}** - First to 3 wins!"
     )
-    await ctx.send(f"{player2.mention}, do you accept the challenge? (yes/no)")
+    await interaction.channel.send(
+        f"{player2.mention}, do you accept the challenge? (yes/no)"
+    )
 
     def check_opponent(m):
-        return m.author == player2 and m.channel == ctx.channel
+        return m.author == player2 and m.channel == interaction.channel
 
     try:
         msg = await bot.wait_for("message", timeout=30.0, check=check_opponent)
         if msg.content.lower() not in ["yes", "y"]:
-            await ctx.send(f"❌ {player2.display_name} declined. Game cancelled.")
+            await interaction.channel.send(
+                f"❌ {player2.display_name} declined. Game cancelled."
+            )
             return
     except asyncio.TimeoutError:
-        await ctx.send(f"⏰ {player2.display_name} didn't respond. Game cancelled.")
+        await interaction.channel.send(
+            f"⏰ {player2.display_name} didn't respond. Game cancelled."
+        )
         return
 
-    await ctx.send(
+    # Attempt to establish DM connection to both players safely
+    try:
+        await player1.send(
+            f"🎮 **RPS Game: You vs {player2.display_name}**\nFirst to 3 wins!\n"
+        )
+    except discord.Forbidden:
+        await interaction.channel.send(
+            f"❌ Challenge aborted. I cannot DM {player1.mention}! Open your privacy settings."
+        )
+        return
+
+    try:
+        await player2.send(
+            f"🎮 **RPS Game: You vs {player1.display_name}**\nFirst to 3 wins!\n"
+        )
+    except discord.Forbidden:
+        await interaction.channel.send(
+            f"❌ Challenge aborted. I cannot DM {player2.mention}! Open your privacy settings."
+        )
+        return
+
+    await interaction.channel.send(
         f"✅ Challenge accepted! **{player1.display_name} vs {player2.display_name}**"
     )
-    await ctx.send("📩 Game updates will be sent to your DMs!")
-
-    await player1.send(
-        f"🎮 **RPS Game: You vs {player2.display_name}**\nFirst to 3 wins!\n"
-    )
-    await player2.send(
-        f"🎮 **RPS Game: You vs {player1.display_name}**\nFirst to 3 wins!\n"
-    )
+    await interaction.channel.send("📩 Game updates will be sent to your DMs!")
 
     while player1_score < 3 and player2_score < 3:
         await player1.send("🎯 Your turn! Type `rock`, `paper`, or `scissors`:")
         player1_choice = await get_choice_dm(bot, player1, choices)
         if player1_choice is None:
-            await ctx.send(f"❌ {player1.mention} took too long. Game cancelled.")
+            await interaction.channel.send(
+                f"❌ {player1.mention} took too long. Game cancelled."
+            )
             await player2.send(
                 f"❌ {player1.display_name} took too long. Game cancelled."
             )
@@ -167,7 +207,9 @@ async def multiplayer_rps(ctx, bot, opponent):
         await player2.send("🎯 Your turn! Type `rock`, `paper`, or `scissors`:")
         player2_choice = await get_choice_dm(bot, player2, choices)
         if player2_choice is None:
-            await ctx.send(f"❌ {player2.mention} took too long. Game cancelled.")
+            await interaction.channel.send(
+                f"❌ {player2.mention} took too long. Game cancelled."
+            )
             await player1.send(
                 f"❌ {player2.display_name} took too long. Game cancelled."
             )
@@ -204,7 +246,7 @@ async def multiplayer_rps(ctx, bot, opponent):
     else:
         final_msg = f"\n🎉🎉🎉 **{player2.display_name} WINS THE GAME!** {player2_score}-{player1_score} 🎉🎉🎉"
 
-    await ctx.send(final_msg)
+    await interaction.channel.send(final_msg)
     await player1.send(f"**GAME OVER**\n{final_msg}")
     await player2.send(f"**GAME OVER**\n{final_msg}")
 
@@ -234,16 +276,16 @@ async def get_choice_dm(bot, player, choices):
         return random.choice(choices)
 
 
-async def ask_play_again(ctx, bot, game_func):
+async def ask_play_again(interaction: discord.Interaction, bot, game_func):
     def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
+        return m.author == interaction.user and m.channel == interaction.channel
 
-    await ctx.send("\nPlay again? (yes/no)")
+    await interaction.channel.send("\nPlay again? (yes/no)")
     try:
         msg = await bot.wait_for("message", timeout=30.0, check=check)
         if msg.content.lower() in ["yes", "y"]:
-            await game_func(ctx, bot)
+            await game_func(interaction, bot)
         else:
-            await ctx.send("Thanks for playing!")
+            await interaction.channel.send("Thanks for playing!")
     except asyncio.TimeoutError:
-        await ctx.send("Thanks for playing!")
+        await interaction.channel.send("Thanks for playing!")

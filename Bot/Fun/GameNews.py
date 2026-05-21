@@ -1,6 +1,6 @@
-# Bot/Fun/GameNews.py
 import os
 import requests
+import discord  # FIXED: Added missing import
 from discord.ext import tasks
 from Utils.Logger import setup_logging
 from Utils.Config import get_game_news_channel
@@ -55,5 +55,8 @@ async def before_game_news():
 
 
 def setup(bot):
+    # Added assignment back to the module function wrapper since it is called in Bot.py
     send_game_news.bot = bot
-    send_game_news.start()
+    # If already running when Bot.py calls setup(bot), prevent RuntimeError: Task is already launching and executing.
+    if not send_game_news.is_running():
+        send_game_news.start()

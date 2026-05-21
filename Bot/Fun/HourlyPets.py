@@ -1,4 +1,3 @@
-# Bot/Fun/HourlyPets.py
 import requests
 from discord.ext import tasks
 from Utils.Logger import setup_logging
@@ -53,4 +52,5 @@ async def before_send():
 
 def setup(bot):
     send_pet_pic.bot = bot
-    send_pet_pic.start()
+    if not send_pet_pic.is_running():
+        send_pet_pic.start()

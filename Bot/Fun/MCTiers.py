@@ -1,11 +1,10 @@
-# Bot/Fun/MCTiers.py
-from Utils.Logger import setup_logging
+import asyncio
+import json
+import urllib.parse
+import discord
 import requests
 from requests.exceptions import Timeout as RequestsTimeout
-import discord
-import asyncio
-import urllib.parse
-import json
+from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
@@ -26,24 +25,33 @@ def fetch_mc_profile(username):
 
 
 def setup(bot):
-    @bot.command(name="mc", aliases=["Mc", "MC", "mcinfo", "Mcinfo", "MCINFO"])
-    async def mc(ctx, *, username: str = None):
+
+    @bot.tree.command(name="mc", description="Get Minecraft player info from MCTiers.")
+    async def mc(interaction: discord.Interaction, username: str = None):
         """Get Minecraft player info from MCTiers."""
         if not username:
-            await ctx.send("❌ Please provide a username! Example: `!mc uku3lig`")
+            await interaction.response.send_message(
+                "❌ Please provide a username! Example: `/mc uku3lig`"
+            )
             return
 
-        logging.info(f"{ctx.author} used !mc command for: {username}")
+        logging.info(
+            f"{interaction.user} used /mc command for: {username}"  # FIXED: changed !mc to /mc
+        )
 
         try:
             response = await asyncio.to_thread(fetch_mc_profile, username)
 
             if response.status_code == 404:
-                await ctx.send(f"❌ Player **{username}** not found!")
+                await interaction.response.send_message(
+                    f"❌ Player **{username}** not found!"
+                )
                 return
 
             if response.status_code != 200:
-                await ctx.send("❌ API error. Try again later!")
+                await interaction.response.send_message(
+                    "❌ API error. Try again later!"
+                )
                 return
 
             data = response.json()
@@ -55,7 +63,9 @@ def setup(bot):
             )
 
             embed.add_field(
-                name="🌍 Region", value=data.get("region", "Unknown"), inline=True
+                name="🌍 Region",
+                value=data.get("region", "Unknown"),
+                inline=True,
             )
             embed.add_field(
                 name="⭐ Points", value=str(data.get("points", 0)), inline=True
@@ -68,7 +78,9 @@ def setup(bot):
 
             if data.get("discord_id"):
                 embed.add_field(
-                    name="💬 Discord", value=f"<@{data['discord_id']}>", inline=True
+                    name="💬 Discord",
+                    value=f"<@{data['discord_id']}>",
+                    inline=True,
                 )
 
             rankings = data.get("rankings", {})
@@ -91,22 +103,28 @@ def setup(bot):
                     [f"🏅 {b['title']} — {b['desc']}" for b in data["badges"]]
                 )
                 embed.add_field(
-                    name="🏅 Badges", value=truncate_field(badges_text), inline=False
+                    name="🏅 Badges",
+                    value=truncate_field(badges_text),
+                    inline=False,
                 )
 
             embed.set_footer(text="Data from MCTiers API")
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
             logging.info(f"MC info sent for {data['name']}")
 
         except RequestsTimeout:
-            await ctx.send("❌ Request timed out. Try again later!")
+            await interaction.response.send_message(
+                "❌ Request timed out. Try again later!"
+            )
             logging.error("MCTiers API timeout")
         except (
             requests.exceptions.RequestException,
             json.JSONDecodeError,
             ValueError,
         ) as e:
-            await ctx.send("❌ Could not fetch Minecraft info. Try again later!")
+            await interaction.response.send_message(
+                "❌ Could not fetch Minecraft info. Try again later!"
+            )
             logging.error(f"MCTiers API error: {e}")
         except Exception as e:
             logging.error(f"MCTiers unexpected error: {e}")

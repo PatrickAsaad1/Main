@@ -1,17 +1,18 @@
-# Bot/Fun/Coinflip.py
-from Utils.Logger import setup_logging
+import discord
 import random
+from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(
+
+    @bot.tree.command(
         name="coinflip",
-        aliases=["Coin", "COIN", "coin", "COINFLIP", "Coinflip", "cf", "flip"],
+        description="Flip a coin and get heads or tails.",
     )
-    async def coinflip(ctx):
+    async def coinflip(interaction: discord.Interaction):
         """Flip a coin and get heads or tails."""
         coin = random.choice(["Heads", "Tails"])
-        logging.info(f"{ctx.author} flipped a coin: {coin}")
-        await ctx.reply(f"🪙 The coin landed on **{coin}**!")
+        logging.info(f"{interaction.user} flipped a coin: {coin}")
+        await interaction.response.send_message(f"🪙 The coin landed on **{coin}**!")

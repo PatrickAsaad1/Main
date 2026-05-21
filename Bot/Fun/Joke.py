@@ -1,4 +1,4 @@
-# Bot/Fun/Joke.py
+import discord
 import requests
 from Utils.Logger import setup_logging
 
@@ -6,18 +6,23 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(
+
+    @bot.tree.command(
         name="joke",
-        aliases=["Joke", "JOKE", "DADJOKE", "DadJoke", "Dadjoke", "dadjoke"],
+        description="Get a random dad joke.",
     )
-    async def joke(ctx):
-        logging.info(f"{ctx.author} used !joke command")
+    async def joke(interaction: discord.Interaction):
+        logging.info(
+            f"{interaction.user} used /joke command"
+        )  # FIXED: changed !joke to /joke
         try:
             headers = {"Accept": "application/json"}
             response = requests.get("https://icanhazdadjoke.com/", headers=headers)
             json_data = response.json()
-            await ctx.reply(f"😂 **{json_data['joke']}**")
+            await interaction.response.send_message(f"😂 **{json_data['joke']}**")
             logging.info("Joke sent successfully")
         except:
-            await ctx.reply("❌ Couldn't fetch a joke right now. Try again later!")
+            await interaction.response.send_message(
+                "❌ Couldn't fetch a joke right now. Try again later!"
+            )
             logging.error("Joke API error")

@@ -1,34 +1,39 @@
-# Bot_games/Bot_Talk.py
-from Utils.Logger import setup_logging
-import discord
 import asyncio
+import discord
+from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
 
 def setup(bot):
 
-    @bot.command(name="say", aliases=["Say", "Send", "send", "SEND", "dm", "Dm", "DM"])
-    async def say(ctx, *, msg: str):
+    @bot.tree.command(name="say", description="Make the bot repeat what you say in DMs")
+    async def say(interaction: discord.Interaction, msg: str):
         """Make the bot repeat what you say in DMs"""
-        logging.info(f"User {ctx.author} used !say {msg}")
+        logging.info(f"User {interaction.user} used /say {msg}")
         try:
-            await ctx.author.send(msg)
-            await ctx.reply("✅ Check your DMs!")
-            logging.info(f"{ctx.author} made the bot say {msg}")
-        except:
-            await ctx.reply("❌ I couldn't DM you! Check your privacy settings.")
-            logging.error(f"Couldn't dm {ctx.author}")
+            await interaction.user.send(msg)
+            await interaction.response.send_message("✅ Check your DMs!")
+            logging.info(f"{interaction.user} made the bot say {msg}")
+        except discord.Forbidden:
+            await interaction.response.send_message(
+                "❌ I couldn't DM you! Check your privacy settings."
+            )
+            logging.error(f"Couldn't dm {interaction.user}")
 
-    @bot.command(name="repeat", aliases=["Repeat", "REPEAT", "spam", "Spam", "SPAM"])
-    async def repeat(ctx, *, msg: str):
+    @bot.tree.command(
+        name="repeat", description="Make the bot spam a message in your DMs"
+    )
+    async def repeat(interaction: discord.Interaction, msg: str):
         """Make the bot spam a message in your DMs"""
-        logging.info(f"User {ctx.author} used !repeat {msg}")
+        logging.info(
+            f"User {interaction.user} used /repeat {msg}"
+        )  # FIXED: changed !repeat to /repeat
 
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return m.author == interaction.user and m.channel == interaction.channel
 
-        await ctx.reply(
+        await interaction.response.send_message(
             "🔢 How many times do you want that message to be sent? (Max: 10)"
         )
 
@@ -37,40 +42,56 @@ def setup(bot):
             times = int(response.content)
 
             if times <= 0:
-                await ctx.send("❌ Number must be positive!")
+                await interaction.followup.send(
+                    "❌ Number must be positive!"
+                )  # FIXED: use followup instead of channel.send
                 return
 
             if times > 10:
-                await ctx.send("❌ Maximum is 10 times to prevent spam!")
+                await interaction.followup.send(  # FIXED: use followup instead of channel.send
+                    "❌ Maximum is 10 times to prevent spam!"
+                )
                 times = 10
 
-            await ctx.send(f"✅ Sending `{msg}` {times} time(s) to your DMs!")
+            await interaction.followup.send(  # FIXED: use followup instead of channel.send
+                f"✅ Sending `{msg}` {times} time(s) to your DMs!"
+            )
 
             for i in range(times):
                 try:
-                    await ctx.author.send(f"{i+1}. {msg}")
+                    await interaction.user.send(f"{i+1}. {msg}")
                     await asyncio.sleep(0.5)
-                except:
-                    await ctx.send("❌ I couldn't DM you! Check your privacy settings.")
-                    logging.error(f"Couldn't dm {ctx.author} during repeat")
+                except discord.Forbidden:
+                    await interaction.followup.send(  # FIXED: use followup instead of channel.send
+                        "❌ I couldn't DM you! Check your privacy settings."
+                    )
+                    logging.error(f"Couldn't dm {interaction.user} during repeat")
                     return
 
-            await ctx.send("✅ Done! Check your DMs!")
-            logging.info(f"{ctx.author} repeated message {times} times")
+            await interaction.followup.send(
+                "✅ Done! Check your DMs!"
+            )  # FIXED: use followup instead of channel.send
+            logging.info(f"{interaction.user} repeated message {times} times")
 
         except ValueError:
-            await ctx.send("❌ Please enter a valid number!")
+            await interaction.followup.send(
+                "❌ Please enter a valid number!"
+            )  # FIXED: use followup instead of channel.send
         except asyncio.TimeoutError:
-            await ctx.send("⏰ Time's up! Command cancelled.")
+            await interaction.followup.send(
+                "⏰ Time's up! Command cancelled."
+            )  # FIXED: use followup instead of channel.send
         except Exception as e:
-            await ctx.send("❌ Something went wrong!")
+            await interaction.followup.send(
+                "❌ Something went wrong!"
+            )  # FIXED: use followup instead of channel.send
             logging.error(f"Repeat command error: {e}")
 
-    @bot.command(name="reply", aliases=["Reply", "REPLY", "r"])
-    async def reply_cmd(ctx, *, msg: str = None):
+    @bot.tree.command(name="reply", description="Make the bot reply to your message")
+    async def reply_cmd(interaction: discord.Interaction, msg: str = None):
         """Reply to the message that triggered this command"""
-        logging.info(f"User {ctx.author} used !reply")
+        logging.info(f"User {interaction.user} used /reply")
         if msg:
-            await ctx.reply(msg)
+            await interaction.response.send_message(msg)
         else:
-            await ctx.reply("This is a reply to your message!")
+            await interaction.response.send_message("This is a reply to your message!")

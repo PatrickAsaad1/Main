@@ -1,10 +1,9 @@
-# Bot/Security/EncryptDecrypt.py
-from Utils.Logger import setup_logging
 import asyncio
 import discord
+from Utils.Logger import setup_logging
 
 try:
-    from cryptography.fernet import Fernet, InvalidToken  # ← ADD InvalidToken
+    from cryptography.fernet import Fernet, InvalidToken
 
     FERNET_AVAILABLE = True
 except ImportError:
@@ -16,19 +15,17 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="encrypt", aliases=["Encrypt", "ENCRYPT", "enc"])
-    async def encrypt(ctx, *, msg: str = None):
+
+    @bot.tree.command(name="encrypt", description="Encrypt a message using Fernet.")
+    async def encrypt(interaction: discord.Interaction, msg: str):
         """Encrypt a message using Fernet."""
-        logging.info(f"{ctx.author} selected encrypt")
+        logging.info(f"{interaction.user} selected encrypt")
 
         if not FERNET_AVAILABLE:
-            await ctx.send(
-                "❌ This feature is currently unavailable. Please contact the bot owner."
+            await interaction.response.send_message(
+                "❌ This feature is currently unavailable. Please contact the bot owner.",
+                ephemeral=True,
             )
-            return
-
-        if not msg:
-            await ctx.send("❌ Usage: `!encrypt <message>`")
             return
 
         try:
@@ -37,47 +34,70 @@ def setup(bot):
             encrypted = cipher.encrypt(msg.encode())
 
             try:
-                await ctx.author.send(
+                await interaction.user.send(
                     f"🔒 **Encrypted:** `{encrypted.decode()}`\n"
                     f"🔑 **Key (SAVE THIS):** `{key.decode()}`\n"
                     "⚠️ Without this key, the message is lost forever!"
                 )
-                await ctx.send("✅ Check your DMs for the encrypted message and key!")
-                logging.info(f"{ctx.author} encrypted a message successfully")
-            except:
-                await ctx.send("❌ I couldn't DM you! Check your privacy settings.")
-                logging.error(f"Couldn't DM {ctx.author} for encryption")
+                await interaction.response.send_message(
+                    "✅ Check your DMs for the encrypted message and key!"
+                )
+                logging.info(f"{interaction.user} encrypted a message successfully")
+            except discord.Forbidden:
+                await interaction.response.send_message(
+                    "❌ I couldn't DM you! Check your privacy settings.",
+                    ephemeral=True,
+                )
+                logging.error(f"Couldn't DM {interaction.user} for encryption")
 
         except Exception as e:
-            await ctx.send("❌ Encryption failed!")
+            await interaction.response.send_message(
+                "❌ Encryption failed!", ephemeral=True
+            )
             logging.error(f"Encryption error: {e}")
 
-    @bot.command(name="decrypt", aliases=["Decrypt", "DECRYPT", "dec"])
-    async def decrypt(ctx):
+    @bot.tree.command(name="decrypt", description="Decrypt a message using the key.")
+    async def decrypt(interaction: discord.Interaction):
         """Decrypt a message using the key."""
-        logging.info(f"{ctx.author} selected decrypt")
+        logging.info(f"{interaction.user} selected decrypt")
 
         if not FERNET_AVAILABLE:
-            await ctx.send(
-                "❌ This feature is currently unavailable. Please contact the bot owner."
+            await interaction.response.send_message(
+                "❌ This feature is currently unavailable. Please contact the bot owner.",
+                ephemeral=True,
             )
             return
 
         def check(m):
-            return m.author == ctx.author and isinstance(m.channel, discord.DMChannel)
+            return m.author == interaction.user and isinstance(
+                m.channel, discord.DMChannel
+            )
 
+        # Attempt to prompt the user in DMs first
         try:
-            await ctx.author.send("🔒 Please enter the **encrypted message**:")
-            encrypted_msg = await bot.wait_for("message", timeout=60.0, check=check)
-        except asyncio.TimeoutError:
-            await ctx.author.send("⏰ Time's up! Cancelled.")
+            await interaction.user.send("🔒 Please enter the **encrypted message**:")
+            # Acknowledge the slash command inside the guild channel safely
+            await interaction.response.send_message(
+                "✅ Check your DMs to continue decryption!"
+            )
+        except discord.Forbidden:
+            await interaction.response.send_message(
+                "❌ I couldn't DM you! Check your privacy settings.",
+                ephemeral=True,
+            )
             return
 
         try:
-            await ctx.author.send("🔑 Please enter the **key**:")
+            encrypted_msg = await bot.wait_for("message", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await interaction.user.send("⏰ Time's up! Cancelled.")
+            return
+
+        try:
+            await interaction.user.send("🔑 Please enter the **key**:")
             key_input = await bot.wait_for("message", timeout=60.0, check=check)
         except asyncio.TimeoutError:
-            await ctx.author.send("⏰ Time's up! Cancelled.")
+            await interaction.user.send("⏰ Time's up! Cancelled.")
             return
 
         try:
@@ -86,18 +106,19 @@ def setup(bot):
             cipher = Fernet(key)
             decrypted = cipher.decrypt(encrypted_bytes)
 
-            await ctx.author.send(f"🔓 **Decrypted:** `{decrypted.decode()}`")
-            await ctx.send("✅ Check your DMs for the decrypted message!")
-            logging.info(f"{ctx.author} decrypted a message successfully")
+            await interaction.user.send(f"🔓 **Decrypted:** `{decrypted.decode()}`")
+            logging.info(f"{interaction.user} decrypted a message successfully")
 
-        except InvalidToken:  # ← FIXED: Use imported InvalidToken
-            await ctx.author.send(
+        except InvalidToken:
+            await interaction.user.send(
                 "❌ Invalid key or encrypted message!\n"
                 "💡 Make sure you copied both EXACTLY as shown."
             )
-            await ctx.send("❌ Decryption failed. Check your DMs.")
-            logging.warning(f"{ctx.author} failed to decrypt - invalid key or message")
+            logging.warning(
+                f"{interaction.user} failed to decrypt - invalid key or message"
+            )
         except Exception as e:
-            await ctx.author.send("❌ Decryption failed! Check your key and message.")
-            await ctx.send("❌ Decryption failed. Check your DMs.")
-            logging.warning(f"{ctx.author} failed to decrypt: {e}")
+            await interaction.user.send(
+                "❌ Decryption failed! Check your key and message."
+            )
+            logging.warning(f"{interaction.user} failed to decrypt: {e}")

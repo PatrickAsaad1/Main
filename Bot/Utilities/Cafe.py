@@ -1,5 +1,5 @@
-# games/cafe.py
 import asyncio
+import discord
 from Utils.Logger import setup_logging
 from datetime import datetime
 from Utils.Helpers import return_to_menu, returnx
@@ -8,14 +8,18 @@ logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="cafe", aliases=["Cafe", "CAFE"])
-    async def cafe(ctx):
+
+    @bot.tree.command(
+        name="cafe",
+        description="Order food and drinks from Pat Cafe with a fun interactive system.",
+    )
+    async def cafe(interaction: discord.Interaction):
+        """Cafe ordering system."""
+        logging.info(f"{interaction.user} selected cafe system")
 
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return m.author == interaction.user and m.channel == interaction.channel
 
-        """Cafe ordering system."""
-        logging.info(f"{ctx.author} selected cafe system")
         max_quantities = {
             "pizza": 10,
             "burger": 15,
@@ -24,18 +28,24 @@ def setup(bot):
             "latte": 50,
         }
         DEFAULT_MAX_QTY = 50
-        menu_prices = {"pizza": 8, "burger": 7, "tea": 2, "coffee": 3, "latte": 4}
+        menu_prices = {
+            "pizza": 8,
+            "burger": 7,
+            "tea": 2,
+            "coffee": 3,
+            "latte": 4,
+        }
         menu_items = ", ".join(menu_prices.keys())
 
-        await ctx.reply("Welcome to Pat Cafe!")
+        await interaction.response.send_message("Welcome to Pat Cafe!")
 
         orders = []
         total_price = 0
 
         while True:
             try:
-                await ctx.send(
-                    f"{ctx.author.mention}, what do you want today? Here's what we are serving:\n{menu_items}"
+                await interaction.channel.send(
+                    f"{interaction.user.mention}, what do you want today? Here's what we are serving:\n{menu_items}"
                 )
                 order_msg = await bot.wait_for("message", timeout=30.0, check=check)
 
@@ -45,27 +55,35 @@ def setup(bot):
                 order = order_msg.content.lower().strip()
 
                 if order not in menu_prices:
-                    await ctx.reply(
+                    await interaction.channel.send(
                         f"Sorry, we don't have '{order}' on the menu. Try again."
                     )
-                    logging.warning(f"{ctx.author} requested invalid item: {order}")
+                    logging.warning(
+                        f"{interaction.user} requested invalid item: {order}"
+                    )
                     continue
 
                 max_qty = max_quantities.get(order, DEFAULT_MAX_QTY)
                 if order == "pizza":
-                    await ctx.reply("🍕 Great choice! Pizza is delicious!")
+                    await interaction.channel.send(
+                        "🍕 Great choice! Pizza is delicious!"
+                    )
                 elif order == "burger":
-                    await ctx.reply("🍔 Yummy! Burgers are always a good idea!")
+                    await interaction.channel.send(
+                        "🍔 Yummy! Burgers are always a good idea!"
+                    )
                 else:
-                    await ctx.reply(f"☕ {order.title()} is a perfect pick-me-up!")
+                    await interaction.channel.send(
+                        f"☕ {order.title()} is a perfect pick-me-up!"
+                    )
 
             except asyncio.TimeoutError:
-                await ctx.send("⏰ Time's up! Order cancelled.")
+                await interaction.channel.send("⏰ Time's up! Order cancelled.")
                 return
 
             while True:
                 try:
-                    await ctx.send(f"How many {order} would you like?")
+                    await interaction.channel.send(f"How many {order} would you like?")
                     qty_msg = await bot.wait_for("message", timeout=30.0, check=check)
 
                     if returnx(qty_msg.content):
@@ -74,16 +92,18 @@ def setup(bot):
                     qty_input = qty_msg.content.strip()
 
                     if not qty_input.isdigit():
-                        await ctx.reply("Please enter a valid number!")
+                        await interaction.channel.send("Please enter a valid number!")
                         logging.warning("User put a non-number input")
                         continue
 
                     qty = int(qty_input)
                     if qty <= 0:
                         logging.warning("User put a negative number")
-                        await ctx.reply("Please enter a positive number!")
+                        await interaction.channel.send(
+                            "Please enter a positive number!"
+                        )
                     elif qty > max_qty:
-                        await ctx.reply(
+                        await interaction.channel.send(
                             f"Sorry, we can only serve up to {max_qty} {order}s at a time."
                         )
                         logging.warning(
@@ -93,10 +113,16 @@ def setup(bot):
                         break
 
                 except asyncio.TimeoutError:
-                    await ctx.send("⏰ Time's up! Order cancelled.")
+                    await interaction.channel.send("⏰ Time's up! Order cancelled.")
                     return
 
-            orders.append({"item": order, "quantity": qty, "price": menu_prices[order]})
+            orders.append(
+                {
+                    "item": order,
+                    "quantity": qty,
+                    "price": menu_prices[order],
+                }
+            )
             total_price += qty * menu_prices[order]
 
             if qty > 1:
@@ -109,13 +135,15 @@ def setup(bot):
             else:
                 item_word = order
 
-            await ctx.reply(f"✓ Added {qty} {item_word} to your order.")
+            await interaction.channel.send(f"✓ Added {qty} {item_word} to your order.")
             logging.info(
                 f"Added {qty} x {order} to order. Current total: ${total_price:.2f}"
             )
 
             try:
-                await ctx.reply("Would you like to order something else? (y/n):")
+                await interaction.channel.send(
+                    "Would you like to order something else? (y/n):"
+                )
                 more_msg = await bot.wait_for("message", timeout=30.0, check=check)
 
                 if returnx(more_msg.content):
@@ -125,11 +153,15 @@ def setup(bot):
                 if more not in ["y", "yes"]:
                     break
             except asyncio.TimeoutError:
-                await ctx.send("⏰ Time's up! Finishing your order.")
+                await interaction.channel.send("⏰ Time's up! Finishing your order.")
                 break
 
         if orders:
-            summary_lines = ["\n" + "=" * 40, "     Your Order Summary", "=" * 40]
+            summary_lines = [
+                "\n" + "=" * 40,
+                "     Your Order Summary",
+                "=" * 40,
+            ]
             for item in orders:
                 summary_lines.append(
                     f"• {item['quantity']} x {item['item']}: ${item['quantity'] * item['price']:.2f}"
@@ -142,7 +174,9 @@ def setup(bot):
                     "Thank you for visiting Pat Cafe! ☕",
                 ]
             )
-            await ctx.send("\n".join(summary_lines))
-            logging.info(f"{ctx.author} completed order. Total: ${total_price:.2f}")
+            await interaction.channel.send("\n".join(summary_lines))
+            logging.info(
+                f"{interaction.user} completed order. Total: ${total_price:.2f}"
+            )
         else:
-            await ctx.send("No items ordered. Come back soon!")
+            await interaction.channel.send("No items ordered. Come back soon!")

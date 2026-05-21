@@ -1,31 +1,36 @@
-# Bot_games/calculator.py (Upgraded)
+import discord
 from Utils.Logger import setup_logging
 
 logging = setup_logging()
 
 
 def setup(bot):
-    @bot.command(name="calc", aliases=["Calc", "CALC", "calculate", "Calculate"])
-    async def calc(ctx, *, expression: str = None):
-        """Calculator: $calc 5+3 or $calc 5 + 3 + 2"""
-        logging.info(f"Calc by {ctx.author}: {expression}")
 
-        if not expression:
-            await ctx.send("❌ Usage: `$calc 5 + 3` or `$calc 5+3`")
-            return
+    @bot.tree.command(
+        name="calc",
+        description="Calculate a simple math expression. Example: /calc expression:5 + 3",
+    )
+    async def calc(interaction: discord.Interaction, expression: str):
+        """Calculator: /calc expression:5+3 or /calc expression:5 + 3 + 2"""
+        logging.info(f"Calc by {interaction.user}: {expression}")
 
-        expression = expression.replace("x", "*").replace("×", "*").replace("÷", "/")
+        # Clean operators
+        cleaned_expression = (
+            expression.replace("x", "*").replace("×", "*").replace("÷", "/").strip()
+        )
 
-        if " " not in expression:
+        if " " not in cleaned_expression:
             for op in ["+", "-", "*", "/"]:
-                if op in expression:
-                    parts = expression.split(op)
+                if op in cleaned_expression:
+                    parts = cleaned_expression.split(op)
                     if len(parts) == 2:
                         try:
                             num1 = float(parts[0])
                             num2 = float(parts[1])
                         except ValueError:
-                            await ctx.reply("❌ Invalid numbers!")
+                            await interaction.response.send_message(
+                                "❌ Invalid numbers!"
+                            )
                             return
 
                         if op == "+":
@@ -36,24 +41,35 @@ def setup(bot):
                             result = num1 * num2
                         elif op == "/":
                             if num2 == 0:
-                                await ctx.reply("❌ Can't divide by zero!")
+                                await interaction.response.send_message(
+                                    "❌ Can't divide by zero!"
+                                )
                                 return
                             result = num1 / num2
 
-                        await ctx.send(f"🧮 {expression} = {result}")
+                        await interaction.response.send_message(
+                            f"🧮 {cleaned_expression} = {result}"
+                        )
                         return
-            await ctx.reply("❌ Invalid format! Use `$calc 5+3` or `$calc 5 + 3 + 2`")
+
+            await interaction.response.send_message(
+                "❌ Invalid format! Use `/calc expression:5+3` or `/calc expression:5 + 3 + 2`"
+            )
             return
 
-        parts = expression.split()
+        parts = cleaned_expression.split()
 
         if len(parts) < 3 or len(parts) % 2 == 0:
-            await ctx.reply("❌ Invalid format! Example: `$calc 5 + 3 + 2`")
+            await interaction.response.send_message(
+                "❌ Invalid format! Example: `/calc expression:5 + 3 + 2`"
+            )
             return
 
         for i in range(1, len(parts), 2):
             if parts[i] not in ["+", "-", "*", "/"]:
-                await ctx.reply(f"❌ Invalid operator: {parts[i]}")
+                await interaction.response.send_message(
+                    f"❌ Invalid operator: {parts[i]}"
+                )
                 return
 
         try:
@@ -71,11 +87,15 @@ def setup(bot):
                     result *= num
                 elif op == "/":
                     if num == 0:
-                        await ctx.reply("❌ Can't divide by zero!")
+                        await interaction.response.send_message(
+                            "❌ Can't divide by zero!"
+                        )
                         return
                     result /= num
 
-            await ctx.send(f"🧮 {expression} = {result}")
+            await interaction.response.send_message(
+                f"🧮 {cleaned_expression} = {result}"
+            )
 
         except ValueError:
-            await ctx.reply("❌ Invalid numbers!")
+            await interaction.response.send_message("❌ Invalid numbers!")

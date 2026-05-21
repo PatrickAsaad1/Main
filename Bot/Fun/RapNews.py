@@ -1,6 +1,6 @@
-# Bot/Fun/RapNews.py
 import os
 import requests
+import discord  # FIXED: Added missing import
 from discord.ext import tasks
 from Utils.Logger import setup_logging
 from Utils.Config import get_rap_news_channel
@@ -60,4 +60,5 @@ async def before_rap_news():
 
 def setup(bot):
     send_rap_news.bot = bot
-    send_rap_news.start()
+    if not send_rap_news.is_running():
+        send_rap_news.start()

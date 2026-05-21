@@ -1,67 +1,67 @@
-# Bot/Utilities/Morse.py
+import discord
 from Utils.Logger import setup_logging
-import asyncio
 
 logging = setup_logging()
 
+MORSE_CODE_DICT = {
+    "A": ".-",
+    "B": "-...",
+    "C": "-.-.",
+    "D": "-..",
+    "E": ".",
+    "F": "..-.",
+    "G": "--.",
+    "H": "....",
+    "I": "..",
+    "J": ".---",
+    "K": "-.-",
+    "L": ".-..",
+    "M": "--",
+    "N": "-.",
+    "O": "---",
+    "P": ".--.",
+    "Q": "--.-",
+    "R": ".-.",
+    "S": "...",
+    "T": "-",
+    "U": "..-",
+    "V": "...-",
+    "W": ".--",
+    "X": "-..-",
+    "Y": "-.--",
+    "Z": "--..",
+    "1": ".----",
+    "2": "..---",
+    "3": "...--",
+    "4": "....-",
+    "5": ".....",
+    "6": "-....",
+    "7": "--...",
+    "8": "---..",
+    "9": "----.",
+    "0": "-----",
+    " ": "/",
+}
+
 
 def setup(bot):
-    @bot.command(name="morse", aliases=["Morse", "MORSE"])
-    async def morse(ctx, *, msg):
-        logging.info(f"{ctx.author} used !morse command")
 
-        MORSE_CODE = {
-            "A": ".-",
-            "B": "-...",
-            "C": "-.-.",
-            "D": "-..",
-            "E": ".",
-            "F": "..-.",
-            "G": "--.",
-            "H": "....",
-            "I": "..",
-            "J": ".---",
-            "K": "-.-",
-            "L": ".-..",
-            "M": "--",
-            "N": "-.",
-            "O": "---",
-            "P": ".--.",
-            "Q": "--.-",
-            "R": ".-.",
-            "S": "...",
-            "T": "-",
-            "U": "..-",
-            "V": "...-",
-            "W": ".--",
-            "X": "-..-",
-            "Y": "-.--",
-            "Z": "--..",
-            "0": "-----",
-            "1": ".----",
-            "2": "..---",
-            "3": "...--",
-            "4": "....-",
-            "5": ".....",
-            "6": "-....",
-            "7": "--...",
-            "8": "---..",
-            "9": "----.",
-            " ": "/",
-        }
+    @bot.tree.command(name="morse", description="Convert text to Morse code.")
+    async def morse(interaction: discord.Interaction, msg: str):
+        logging.info(
+            f"{interaction.user} used /morse command"
+        )  # FIXED: added / for consistency
 
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-        if msg == "":
-            await ctx.reply("❌ Please enter something to convert to Morse code!")
-            return
-        text = msg.upper()
-        morse_text = []
-        for char in text:
-            if char in MORSE_CODE:
-                morse_text.append(MORSE_CODE[char])
+        encrypted_msg = ""
+        for letter in msg.upper():
+            if letter in MORSE_CODE_DICT:
+                encrypted_msg += MORSE_CODE_DICT[letter] + " "
             else:
-                morse_text.append(char)
-        result = " ".join(morse_text)
-        await ctx.reply(f"📡 **Morse Code:**\n`{result}`")
-        logging.info(f"Morse code generated for: {text}")
+                encrypted_msg += " "
+
+        if not encrypted_msg.strip():
+            return await interaction.response.send_message(
+                "Could not convert that text to morse code.", ephemeral=True
+            )
+
+        await interaction.response.send_message(f"`{encrypted_msg.strip()}`")
